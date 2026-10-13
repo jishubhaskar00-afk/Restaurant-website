@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,20 @@
     <link rel="stylesheet" href="order_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
     <header class="site_header">
-        <div class="navbar">
-        <a class="brand" href="index.html#Home"aria-label="JA Restaurant home">
-            <img src="images/logo1.png" onerror="this.style.display='none'">
-            <span>JA <b>Restaurant</b></span>
-        </a>
+        <nav class="navbar">
+            <a class="brand" href="index.html#Home" aria-label="JA Restaurant home">
+                <img src="images/logo1.png" onerror="this.style.display='none'">
+                <span>JA <b>Restaurant</b></span>
+            </a>
 
-        <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+            <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-        <ul class="nav-links" id="navLinks">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html#Home">Home</a></li>
                 <li><a href="index.html#About">About</a></li>
                 <li><a href="index.html#Menu">Menu</a></li>
@@ -27,7 +29,12 @@
                 <li><a href="index.html#Review">Reviews</a></li>
                 <li><a class="active" href="order.html">Order</a></li>
             </ul>
-        </div>
+            <a class="nav-cart" href="#your-order" aria-label="Go to your order">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="navItemCount">0</span>
+            </a>
+        </nav>
     </header>
 </body>
+
 </html>
