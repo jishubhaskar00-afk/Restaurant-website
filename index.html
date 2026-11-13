@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JA Restaurant</title>
+    <title>JA Restaurant | Online Food Ordering & Management</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fac031">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
         integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
@@ -58,7 +60,7 @@
         </p>
 
         <div class="main_btn">
-            <a href="#">Order Now</a>
+            <a href="order.html">Order Now</a>
             <i class="fa-solid fa-angle-right"></i>
         </div>
     </section>
@@ -91,8 +93,42 @@
 
         </div>
 
-        <a herf="#" class="about_btn">Order Now</a>
+        <a href="order.html" class="about_btn">Order Now</a>
 
+    </div>
+
+
+    
+    <!-- Live Order Tracking Quick Banner (Requirement 5) -->
+    <div class="track_banner">
+        <div>
+            <h3><i class="fa-solid fa-map-location-dot" style="color:#fac031;"></i> Track Live Food Delivery</h3>
+            <p>Enter your Order ID (e.g. ORD-9281) to view real-time cooking & rider status.</p>
+        </div>
+        <form class="track_form_mini" onsubmit="event.preventDefault(); window.location.href='order.html?track=' + encodeURIComponent(document.getElementById('homeTrackInput').value.trim());">
+            <input type="text" id="homeTrackInput" placeholder="Enter Order ID..." required>
+            <button type="submit">Track Order</button>
+        </form>
+    </div>
+
+    <!-- Restaurant Listings & Outlets Directory (Requirement 2) -->
+    <div class="restaurants_section" id="Outlets">
+        <h1>Our<span>Outlets</span></h1>
+
+        <div class="restaurant_filter_bar">
+            <input type="search" id="homeOutletSearch" placeholder="Search outlet by name, location or cuisine...">
+            <select id="homeCuisineFilter">
+                <option value="all">All Cuisines</option>
+                <option value="Multi-Cuisine">Multi-Cuisine</option>
+                <option value="Italian">Italian & Pizza</option>
+                <option value="Biryani">Biryani & Mughlai</option>
+                <option value="Pan-Asian">Pan-Asian & Dim Sum</option>
+            </select>
+        </div>
+
+        <div class="restaurant_grid" id="homeOutletsGrid">
+            <!-- Dynamically populated from backend database -->
+        </div>
     </div>
 
 
@@ -157,7 +193,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -184,7 +220,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -211,7 +247,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -239,7 +275,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -266,7 +302,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -293,7 +329,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -321,7 +357,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -348,7 +384,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -375,7 +411,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -402,7 +438,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -429,7 +465,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -457,7 +493,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -484,7 +520,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -511,7 +547,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -539,7 +575,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
+                    <a href="order.html" class="menu_btn">Order Now</a>
                 </div>
             </div>
 
@@ -562,7 +598,7 @@
                     Toasted triangles layered with ham,
                     lettuce, and cheese, held together with a pick.
                 </p>
-                <a href="#" class="gallary_btn">Order Now</a>
+                <a href="order.html" class="gallary_btn">Order Now</a>
             </div>
             <div class="gallary_image">
                 <img src="images/gallary_2.jpg">
@@ -574,7 +610,7 @@
                     a lace-textured plate with pink flowers and
                     dried tea leaves.
                 </p>
-                <a href="#" class="gallary_btn">Order Now</a>
+                <a href="order.html" class="gallary_btn">Order Now</a>
             </div>
             <div class="gallary_image">
                 <img src="images/gallary_3.jpg">
@@ -584,7 +620,7 @@
                     A rich cupcake topped with a swirl of mocha
                     buttercream and chocolate chips, in a striped wrapper.
                 </p>
-                <a href="#" class="gallary_btn">Order Now</a>
+                <a href="order.html" class="gallary_btn">Order Now</a>
             </div>
             <div class="gallary_image">
                 <img src="images/gallary_4.jpg">
@@ -594,7 +630,7 @@
                     A sliced loaf with a crunchy oat topping and
                     plump blueberries, showing a purple-streaked crumb.
                 </p>
-                <a href="#" class="gallary_btn">Order Now</a>
+                <a href="order.html" class="gallary_btn">Order Now</a>
             </div>
             <div class="gallary_image">
                 <img src="images/gallary_5.jpg">
@@ -604,7 +640,7 @@
                     Black olives, red peppers, onions, tomatoes,
                     and melted cheese on a wooden board.
                 </p>
-                <a href="#" class="gallary_btn">Order Now</a>
+                <a href="order.html" class="gallary_btn">Order Now</a>
             </div>
             <div class="gallary_image">
                 <img src="images/gallary_6.jpg">
@@ -614,7 +650,7 @@
                     Dulce de leche frosting between the layers,
                     topped with strawberries, cherries, and blueberries.
                 </p>
-                <a href="#" class="gallary_btn">Order Now</a>
+                <a href="order.html" class="gallary_btn">Order Now</a>
             </div>
         </div>
     </div>
@@ -1020,6 +1056,60 @@
     </footer>
 
 
+
+    <script src="app_bridge.js"></script>
+    <script>
+        const money = n => "₹" + Number(n || 0).toFixed(2);
+        let outlets = AppBridge.DEFAULT_RESTAURANTS;
+
+        async function loadHomeOutlets() {
+            try {
+                const res = await fetch('/api/restaurants');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.restaurants && data.restaurants.length) outlets = data.restaurants;
+                }
+            } catch(e) {}
+            renderHomeOutlets();
+        }
+
+        function renderHomeOutlets() {
+            const query = (document.getElementById('homeOutletSearch')?.value || '').toLowerCase();
+            const cuisine = document.getElementById('homeCuisineFilter')?.value || 'all';
+
+            const filtered = outlets.filter(r => {
+                const matchQ = r.name.toLowerCase().includes(query) || r.location.toLowerCase().includes(query) || r.cuisine.toLowerCase().includes(query);
+                const matchC = cuisine === 'all' || r.cuisine.toLowerCase().includes(cuisine.toLowerCase());
+                return matchQ && matchC;
+            });
+
+            const grid = document.getElementById('homeOutletsGrid');
+            if (!grid) return;
+            grid.innerHTML = filtered.map(r => `
+                <div class="restaurant_card">
+                    <img src="${r.image}" alt="${r.name}" class="restaurant_card_img" onerror="this.src='images/bg.png'">
+                    <div class="restaurant_card_body">
+                        <div>
+                            <h3>${r.name}</h3>
+                            <div class="cuisine">${r.cuisine}</div>
+                            <div class="info_line"><i class="fa-solid fa-location-dot"></i> ${r.location}</div>
+                            <div class="info_line"><i class="fa-solid fa-clock"></i> ${r.operatingHours}</div>
+                            <div class="info_line"><i class="fa-solid fa-motorcycle"></i> Radius: ${r.deliveryRadius} · ${r.deliveryTime}</div>
+                        </div>
+                        <div class="card_actions">
+                            <span style="font-weight:700; color:#b45309;">⭐ ${r.rating} (${r.reviewsCount})</span>
+                            <a href="order.html">Explore Menu</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('homeOutletSearch')?.addEventListener('input', renderHomeOutlets);
+        document.getElementById('homeCuisineFilter')?.addEventListener('change', renderHomeOutlets);
+
+        loadHomeOutlets();
+    </script>
 </body>
 
 </html>
