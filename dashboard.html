@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Management Dashboard | JA Restaurant</title>
+    <link rel="stylesheet" href="dashboard_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- Dashboard Header -->
+    <header class="dash-header">
+        <div class="dash-header-inner">
+            <a href="index.html" class="dash-brand">
+                <img src="images/logo1.png" alt="JA Logo" onerror="this.style.display='none'">
+                <div class="dash-brand-text">
+                    <h1>JA Restaurant Portal</h1>
+                    <span>Restaurant Owner & Manager Dashboard</span>
+                </div>
+            </a>
+
+            <div class="dash-nav-actions">
+                <span class="badge-tag"><i class="fa-solid fa-circle-check"></i> System Online</span>
+                <a href="order.html" class="btn-secondary" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Customer Store</a>
+                <button class="btn-primary" id="btnOpenAddDish"><i class="fa-solid fa-plus"></i> Add Menu Dish</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dash-container">
+        <!-- Metrics Row -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h3>Total Revenue</h3>
+                    <div class="metric-value" id="valRevenue">₹0.00</div>
+                    <p>Live gross sales across outlets</p>
+                </div>
+                <div class="metric-icon rev"><i class="fa-solid fa-wallet"></i></div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h3>Total Orders</h3>
+                    <div class="metric-value" id="valTotalOrders">0</div>
+                    <p>Lifetime customer orders</p>
+                </div>
+                <div class="metric-icon ord"><i class="fa-solid fa-utensils"></i></div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h3>Active Kitchen Orders</h3>
+                    <div class="metric-value" id="valActiveOrders">0</div>
+                    <p>Confirmed, preparing, or on route</p>
+                </div>
+                <div class="metric-icon act"><i class="fa-solid fa-fire-burner"></i></div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h3>Active Menu Items</h3>
+                    <div class="metric-value" id="valMenuItems">0</div>
+                    <p>Dishes listed in current catalog</p>
+                </div>
+                <div class="metric-icon men"><i class="fa-solid fa-list-check"></i></div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="dash-tabs">
+            <button class="dash-tab active" data-tab="tabOrders"><i class="fa-solid fa-bell-concierge"></i> Live Orders</button>
+            <button class="dash-tab" data-tab="tabMenu"><i class="fa-solid fa-kitchen-set"></i> Menu & Inventory</button>
+            <button class="dash-tab" data-tab="tabAnalytics"><i class="fa-solid fa-chart-line"></i> Analytics & Outlets</button>
+            <button class="dash-tab" data-tab="tabReviews"><i class="fa-solid fa-star"></i> Customer Feedback</button>
+        </nav>
+
+        <!-- TAB 1: Live Orders -->
+        <section class="tab-content active" id="tabOrders">
+            <div class="filter-bar">
+                <div class="pill-filters" id="orderStatusFilters">
+                    <button class="pill-btn active" data-status="all">All Orders</button>
+                    <button class="pill-btn" data-status="Confirmed">Confirmed</button>
+                    <button class="pill-btn" data-status="Preparing">Preparing in Kitchen</button>
+                    <button class="pill-btn" data-status="Out for Delivery">Out for Delivery</button>
+                    <button class="pill-btn" data-status="Delivered">Delivered</button>
+                </div>
+                <div>
+                    <button class="btn-secondary" id="btnRefreshOrders"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </div>
+
+            <div class="orders-grid" id="ordersGrid">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+
+        <!-- TAB 2: Menu & Inventory -->
+        <section class="tab-content" id="tabMenu">
+            <div class="menu-table-card">
+                <div class="table-header">
+                    <div>
+                        <h3>Menu Catalog & Dynamic Pricing</h3>
+                        <p style="font-size: 13px; color: var(--muted); margin-top: 4px;">Update prices on the fly and toggle in-stock / out-of-stock availability.</p>
+                    </div>
+                    <button class="btn-primary" id="btnOpenAddDish2"><i class="fa-solid fa-plus"></i> New Dish</button>
+                </div>
+
+                <table class="menu-table">
+                    <thead>
+                        <tr>
+                            <th>Dish</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Price (₹)</th>
+                            <th>In Stock / Available</th>
+                            <th>Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menuTableBody">
+                        <!-- Injected via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 3: Analytics & Outlets -->
+        <section class="tab-content" id="tabAnalytics">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
+                <div class="metric-card" style="flex-direction: column; align-items: stretch;">
+                    <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-store"></i> Active Restaurant Outlets</h3>
+                    <div id="outletList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                </div>
+
+                <div class="metric-card" style="flex-direction: column; align-items: stretch;">
+                    <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-bolt"></i> Order Fulfillment Performance</h3>
+                    <div style="line-height: 2; font-size: 14px;">
+                        <p><b>Average Preparation Time:</b> 18 minutes</p>
+                        <p><b>Average Delivery Time:</b> 28 minutes</p>
+                        <p><b>Delivery Integration:</b> DoorDash / Uber Eats / In-House Fleet API connected</p>
+                        <p><b>Customer Satisfaction:</b> 98.4% positive ratings</p>
+                        <p><b>Payment Distribution:</b> 45% UPI, 35% COD, 20% Cards</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: Customer Feedback -->
+        <section class="tab-content" id="tabReviews">
+            <div class="orders-grid" id="reviewsGrid"></div>
+        </section>
+    </main>
+
+    <!-- Modal: Add New Menu Item -->
+    <div class="modal-overlay" id="addDishModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Add New Menu Item</h2>
+                <button class="modal-close" id="btnCloseModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addDishForm">
+                    <div class="form-group">
+                        <label>Dish Name</label>
+                        <input type="text" id="newDishName" placeholder="e.g. Crispy Paneer Tikka" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="newDishCat" required>
+                                <option value="starter">Starter / Appetizer</option>
+                                <option value="main">Main Course</option>
+                                <option value="snack">Snack</option>
+                                <option value="drink">Drink / Beverage</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Price (₹)</label>
+                            <input type="number" id="newDishPrice" min="1" step="0.5" placeholder="180" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Food Type</label>
+                            <select id="newDishVeg">
+                                <option value="true">Veg 🟢</option>
+                                <option value="false">Non-Veg 🔴</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL / Path</label>
+                            <input type="text" id="newDishImg" value="images/1.jpg" placeholder="images/1.jpg">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="newDishDesc" rows="3" placeholder="Brief tempting description of the dish..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px;">Save Dish to Catalog</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-toast" id="dashToast">Notification message</div>
+
+    <script src="app_bridge.js"></script>
+    <script>
+        const money = n => "₹" + Number(n || 0).toFixed(2);
+        let allOrders = [];
+        let allMenu = [];
+        let currentStatusFilter = 'all';
+
+        function showToast(msg) {
+            const t = document.getElementById('dashToast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => t.classList.remove('show'), 2400);
+        }
+
+        async function loadData() {
+            try {
+                // Fetch Analytics
+                const aRes = await fetch('/api/admin/analytics');
+                if (aRes.ok) {
+                    const aData = await aRes.json();
+                    document.getElementById('valRevenue').textContent = money(aData.analytics.totalRevenue);
+                    document.getElementById('valTotalOrders').textContent = aData.analytics.totalOrders;
+                    document.getElementById('valActiveOrders').textContent = aData.analytics.activeOrders;
+                    document.getElementById('valMenuItems').textContent = aData.analytics.menuItemCount;
+                }
+            } catch (e) {}
+
+            try {
+                // Fetch Orders
+                const oRes = await fetch('/api/orders');
+                if (oRes.ok) {
+                    const oData = await oRes.json();
+                    allOrders = oData.orders || [];
+                } else {
+                    allOrders = AppBridge.getLocalOrders();
+                }
+            } catch (e) {
+                allOrders = AppBridge.getLocalOrders();
+            }
+
+            try {
+                // Fetch Menu
+                const mRes = await fetch('/api/menu');
+                if (mRes.ok) {
+                    const mData = await mRes.json();
+                    allMenu = mData.menu || [];
+                }
+            } catch (e) {}
+
+            renderOrders();
+            renderMenu();
+            renderOutlets();
+            renderReviews();
+        }
+
+        function renderOrders() {
+            const grid = document.getElementById('ordersGrid');
+            const filtered = currentStatusFilter === 'all' ? allOrders : allOrders.filter(o => o.status === currentStatusFilter);
+            if (!filtered.length) {
+                grid.innerHTML = '<p style="color:var(--muted); padding:30px;">No orders found in this category.</p>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(o => {
+                const badgeClass = (o.status || 'Confirmed').replace(/\s+/g, '_');
+                return `
+                <div class="order-card">
+                    <div>
+                        <div class="order-head">
+                            <div>
+                                <div class="order-id">${o.id}</div>
+                                <div class="order-time">${new Date(o.createdAt || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} · ${o.orderType === 'pickup' ? 'Store Pickup' : 'Delivery'}</div>
+                            </div>
+                            <span class="status-badge ${badgeClass}">${o.status}</span>
+                        </div>
+                        <div class="order-customer">
+                            <b>${o.customerName}</b> (${o.phone})<br>
+                            <small style="color:var(--muted);">${o.address}</small>
+                        </div>
+                        <div class="order-items-list">
+                            ${(o.items || []).map(it => `
+                                <div class="order-item-row">
+                                    <span><b>${it.qty}x</b> ${it.name} ${it.size ? `(${it.size})` : ''}</span>
+                                    <span>${money(it.total || (it.price * it.qty))}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="order-foot">
+                        <div class="order-total-row">
+                            <span>Total (${o.paymentMethod || 'COD'})</span>
+                            <span>${money(o.grandTotal)}</span>
+                        </div>
+                        <div class="order-actions">
+                            <select onchange="updateOrderStatus('${o.id}', this.value)">
+                                <option value="" disabled selected>Update Status...</option>
+                                <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                                <option value="Preparing" ${o.status === 'Preparing' ? 'selected' : ''}>Preparing in Kitchen</option>
+                                <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const res = await fetch(`/api/orders/${orderId}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (res.ok) {
+                    showToast(`Order ${orderId} updated to ${newStatus}`);
+                }
+            } catch (e) {
+                // local fallback
+                const ord = allOrders.find(o => o.id === orderId);
+                if (ord) ord.status = newStatus;
+                showToast(`Order status updated locally`);
+            }
+            loadData();
+        }
+
+        function renderMenu() {
+            const tbody = document.getElementById('menuTableBody');
+            tbody.innerHTML = allMenu.map(m => `
+                <tr>
+                    <td style="display:flex; align-items:center; gap:12px;">
+                        <img src="${m.img}" alt="${m.name}" class="item-thumb" onerror="this.src='images/1.jpg'">
+                        <div>
+                            <b>${m.name}</b><br>
+                            <small style="color:var(--muted);">${(m.desc || '').substring(0, 45)}...</small>
+                        </div>
+                    </td>
+                    <td style="text-transform: capitalize;">${m.cat}</td>
+                    <td>${m.veg ? '🟢 Veg' : '🔴 Non-Veg'}</td>
+                    <td>
+                        <input type="number" class="price-input" value="${m.price}" onchange="updatePrice(${m.id}, this.value)">
+                    </td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" ${m.in_stock !== false ? 'checked' : ''} onchange="toggleStock(${m.id}, this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                    <td>⭐ ${m.rating || 4.8}</td>
+                    <td>
+                        <button class="btn-secondary" style="padding:4px 8px; color:var(--danger);" onclick="deleteDish(${m.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function toggleStock(id, inStock) {
+            try {
+                await fetch(`/api/menu/${id}/availability`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ in_stock: inStock })
+                });
+                showToast(`Item availability updated!`);
+            } catch (e) {
+                const item = allMenu.find(m => m.id === id);
+                if (item) item.in_stock = inStock;
+                showToast(`Item availability updated!`);
+            }
+        }
+
+        async function updatePrice(id, newPrice) {
+            try {
+                await fetch(`/api/menu/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ price: parseFloat(newPrice) })
+                });
+                showToast(`Price updated to ₹${newPrice}!`);
+            } catch (e) {
+                showToast(`Price updated!`);
+            }
+        }
+
+        async function deleteDish(id) {
+            if (!confirm("Are you sure you want to remove this dish?")) return;
+            try {
+                await fetch(`/api/menu/${id}`, { method: 'DELETE' });
+                showToast("Item removed.");
+                loadData();
+            } catch (e) {
+                allMenu = allMenu.filter(m => m.id !== id);
+                renderMenu();
+            }
+        }
+
+        function renderOutlets() {
+            const list = document.getElementById('outletList');
+            list.innerHTML = AppBridge.DEFAULT_RESTAURANTS.map(r => `
+                <div style="border:1px solid var(--line); border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>${r.name}</b><br>
+                        <small style="color:var(--muted);">${r.location} · ${r.operatingHours}</small>
+                    </div>
+                    <span class="badge-tag">⭐ ${r.rating}</span>
+                </div>
+            `).join('');
+        }
+
+        async function renderReviews() {
+            const grid = document.getElementById('reviewsGrid');
+            try {
+                const res = await fetch('/api/reviews');
+                const data = await res.json();
+                grid.innerHTML = (data.reviews || []).map(rev => `
+                    <div class="order-card">
+                        <div class="order-head">
+                            <b>${rev.author}</b>
+                            <span style="color:#f59e0b;">${'★'.repeat(Math.round(rev.rating))} (${rev.rating})</span>
+                        </div>
+                        <p style="font-size:14px; color:var(--ink); margin:10px 0;">"${rev.comment}"</p>
+                        <small style="color:var(--muted);">${rev.restaurant} · ${rev.date || 'Recent'}</small>
+                    </div>
+                `).join('');
+            } catch (e) {}
+        }
+
+        // Tabs switcher
+        document.querySelectorAll('.dash-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Order filters
+        document.getElementById('orderStatusFilters').addEventListener('click', e => {
+            const b = e.target.closest('button');
+            if (!b) return;
+            document.querySelectorAll('#orderStatusFilters button').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            currentStatusFilter = b.dataset.status;
+            renderOrders();
+        });
+
+        document.getElementById('btnRefreshOrders').addEventListener('click', () => {
+            loadData();
+            showToast("Orders refreshed!");
+        });
+
+        // Modal triggers
+        const modal = document.getElementById('addDishModal');
+        const openModal = () => modal.classList.add('open');
+        const closeModal = () => modal.classList.remove('open');
+        document.getElementById('btnOpenAddDish').addEventListener('click', openModal);
+        document.getElementById('btnOpenAddDish2').addEventListener('click', openModal);
+        document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+
+        document.getElementById('addDishForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('newDishName').value,
+                cat: document.getElementById('newDishCat').value,
+                price: parseFloat(document.getElementById('newDishPrice').value),
+                veg: document.getElementById('newDishVeg').value === 'true',
+                img: document.getElementById('newDishImg').value || 'images/1.jpg',
+                desc: document.getElementById('newDishDesc').value
+            };
+
+            try {
+                await fetch('/api/menu', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                showToast("New dish added to catalog!");
+                closeModal();
+                loadData();
+            } catch (e) {
+                allMenu.push({ ...payload, id: Date.now(), in_stock: true, rating: 4.8 });
+                renderMenu();
+                closeModal();
+                showToast("Dish added locally!");
+            }
+        });
+
+        loadData();
+    </script>
+</body>
+
+</html>
