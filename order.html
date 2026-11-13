@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Place Your Order | JA Restauran</title>
+    <title>Place Your Order | JA Restaurant</title>
     <link rel="stylesheet" href="order_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
@@ -13,7 +13,7 @@
     <header class="site_header">
         <nav class="navbar">
             <a class="brand" href="index.html#Home" aria-label="JA Restaurant home">
-                <img src="images/logo1.png" onerror="this.style.display='none'">
+                <img src="images/logo1.png" alt="" onerror="this.style.display='none'">
                 <span>JA <b>Restaurant</b></span>
             </a>
 
@@ -29,12 +29,244 @@
                 <li><a href="index.html#Review">Reviews</a></li>
                 <li><a class="active" href="order.html">Order</a></li>
             </ul>
-            <a class="nav-cart" href="#your-order" aria-label="Go to your order">
+            <a class="nav-cart" id="navCart" href="#your-order" aria-label="Go to your order">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="navItemCount">0</span>
             </a>
         </nav>
     </header>
+
+    <main>
+        <section class="order_hero">
+            <h1><span>Place Your</span>Order</h1>
+            <p>Pick your favourites, adjust the quantity, and tell us where to deliver. Fresh food, hot at your door.</p>
+            <div class="demo_note">
+                <i class="fa-solid fa-circle-info"></i>
+                Demo project – no real orders are taken. Please don't enter real personal details.
+            </div>
+        </section>
+
+        <div class="order_layout">
+
+            <!-- Menu picker -->
+            <section>
+                <div class="picker_top">
+                    <div class="search_box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="search" placeholder="Search dishes...">
+                    </div>
+                    <div class="filters" id="filters">
+                        <button class="on" data-cat="all">All</button>
+                        <button data-cat="starter">Starters</button>
+                        <button data-cat="main">Mains</button>
+                        <button data-cat="snack">Snacks</button>
+                        <button data-cat="drink">Drinks</button>
+                    </div>
+                </div>
+                <div class="dish_grid" id="dishGrid"></div>
+            </section>
+
+            <!-- Cart + checkout -->
+            <aside class="your_order" id="your-order">
+                <h2><span>Your</span> Order</h2>
+
+                <div id="orderPanel">
+                    <div class="cart_list" id="cartList"></div>
+
+                    <div class="summary">
+                        <div><span>Subtotal</span><span id="subTotal">₹0.00</span></div>
+                        <div><span>Delivery</span><span id="delivery">₹0.00</span></div>
+                        <div class="total"><span>Total</span><span id="grandTotal">₹0.00</span></div>
+                    </div>
+
+                    <form class="checkout" id="checkoutForm" novalidate>
+                        <div class="input">
+                            <p>Name</p>
+                            <input type="text" id="name" placeholder="your name" required>
+                        </div>
+                        <div class="input">
+                            <p>Phone Number</p>
+                            <input type="tel" id="phone" placeholder="10-digit mobile number" inputmode="numeric" maxlength="10" required>
+                        </div>
+                        <div class="input">
+                            <p>Email (optional)</p>
+                            <input type="email" id="email" placeholder="your email">
+                        </div>
+                        <div class="input">
+                            <p>Delivery Address</p>
+                            <textarea id="address" placeholder="house no, street, landmark, town" required></textarea>
+                        </div>
+                        <div class="input">
+                            <p>Payment</p>
+                            <div class="pay_row">
+                                <label><input type="radio" name="pay" value="Cash on Delivery" checked>Cash</label>
+                                <label><input type="radio" name="pay" value="UPI">UPI</label>
+                                <label><input type="radio" name="pay" value="Card">Card</label>
+                            </div>
+                        </div>
+                        <p class="demo_small">Demo project – no real orders are taken.</p>
+                        <button type="submit" class="place_btn" id="placeBtn" disabled>
+                            Place Order <i class="fa-solid fa-angle-right"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="success" id="success">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <h3>Thank you!</h3>
+                    <p id="successMsg"></p>
+                    <a href="index.html#Home">Back to Home</a>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="order_footer">
+        Design by<span><i class="fa-solid fa-face-grin-wink"></i> JISHU BHASKAR</span>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const DISHES = [
+            { id: 1, name: "Burger", price: 85, cat: "snack", img: "images/1.jpg" },
+            { id: 2, name: "Cheese Pizza", price: 249, cat: "main", img: "images/2.jpg" },
+            { id: 3, name: "Vegetable Chow Mein", price: 110, cat: "main", img: "images/3.jpg" },
+            { id: 4, name: "BBQ Chicken Drumsticks", price: 199, cat: "starter", img: "images/4.jpg" },
+            { id: 5, name: "Chicken Vegetable Soup", price: 90, cat: "starter", img: "images/5.jpg" },
+            { id: 6, name: "Chicken Biryani", price: 180, cat: "main", img: "images/6.jpg" },
+            { id: 7, name: "Momos", price: 70, cat: "snack", img: "images/7.jpg" },
+            { id: 8, name: "Aloo Paratha", price: 60, cat: "main", img: "images/8.jpg" },
+            { id: 9, name: "Butter Chicken", price: 220, cat: "main", img: "images/9.jpg" },
+            { id: 10, name: "Crispy Chicken Fries", price: 165, cat: "snack", img: "images/10.jpg" },
+            { id: 11, name: "Spicy Chicken Curry", price: 170, cat: "main", img: "images/11.jpg" },
+            { id: 12, name: "Milkshakes", price: 120, cat: "drink", img: "images/12.jpg" },
+            { id: 13, name: "Chicken Lollipop", price: 140, cat: "starter", img: "images/13.jpg" },
+            { id: 14, name: "Mixed Fried Rice", price: 190, cat: "main", img: "images/14.jpg" },
+            { id: 15, name: "Crispy Fried Fish", price: 260, cat: "main", img: "images/15.jpg" },
+            { id: 16, name: "Grilled Sandwich", price: 120, cat: "snack", img: "images/16.jpg" }
+        ];
+
+        const DELIVERY_FEE = 30, FREE_DELIVERY_ABOVE = 500;
+        const $ = id => document.getElementById(id);
+        const money = n => "₹" + n.toFixed(2);
+
+        let cart = {};
+        try { cart = JSON.parse(localStorage.getItem("ja_cart")) || {}; } catch (e) { }
+        let cat = "all", q = "";
+
+        function save() { try { localStorage.setItem("ja_cart", JSON.stringify(cart)); } catch (e) { } }
+
+        function toast(msg) {
+            const t = $("toast");
+            t.textContent = msg;
+            t.classList.add("show");
+            clearTimeout(toast.t);
+            toast.t = setTimeout(() => t.classList.remove("show"), 1800);
+        }
+
+        function renderDishes() {
+            const list = DISHES.filter(d =>
+                (cat === "all" || d.cat === cat) && d.name.toLowerCase().includes(q));
+            $("dishGrid").innerHTML = list.length ? list.map(d => `
+                <div class="dish">
+                    <div class="dish_img"><img src="${d.img}" alt="${d.name}" loading="lazy"></div>
+                    <div class="dish_body">
+                        <h3>${d.name}</h3>
+                        <div class="price">${money(d.price)}</div>
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                        <button class="add_btn" data-add="${d.id}"><i class="fa-solid fa-plus"></i>Add</button>
+                    </div>
+                </div>`).join("") : '<p class="no_result">No dishes found.</p>';
+        }
+
+        function renderCart() {
+            const ids = Object.keys(cart).filter(id => cart[id] > 0);
+            let sub = 0, count = 0;
+
+            $("cartList").innerHTML = ids.length ? ids.map(id => {
+                const d = DISHES.find(x => x.id == id);
+                const line = d.price * cart[id];
+                sub += line; count += cart[id];
+                return `
+                <div class="cart_item">
+                    <img src="${d.img}" alt="">
+                    <div><h4>${d.name}</h4><small>${money(d.price)} each · ${money(line)}</small></div>
+                    <div class="qty">
+                        <button data-dec="${id}" aria-label="Decrease">−</button>
+                        <b>${cart[id]}</b>
+                        <button data-inc="${id}" aria-label="Increase">+</button>
+                        <button class="remove_btn" data-del="${id}" aria-label="Remove"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join("") : `<div class="cart_empty"><i class="fa-solid fa-utensils"></i>Your cart is empty.<br>Add some tasty dishes!</div>`;
+
+            const fee = sub === 0 || sub >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE;
+            $("subTotal").textContent = money(sub);
+            $("delivery").textContent = sub >= FREE_DELIVERY_ABOVE ? "Free" : money(fee);
+            $("grandTotal").textContent = money(sub + fee);
+            $("navItemCount").textContent = count;
+            $("placeBtn").disabled = count === 0;
+            save();
+        }
+
+        function change(id, delta) {
+            cart[id] = Math.max(0, (cart[id] || 0) + delta);
+            if (!cart[id]) delete cart[id];
+            renderCart();
+        }
+
+        document.addEventListener("click", e => {
+            const b = e.target.closest("button");
+            if (!b) return;
+            if (b.dataset.add) {
+                change(b.dataset.add, 1);
+                const d = DISHES.find(x => x.id == b.dataset.add);
+                toast(d.name + " added to your order");
+                const c = $("navCart"); c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump");
+            }
+            if (b.dataset.inc) change(b.dataset.inc, 1);
+            if (b.dataset.dec) change(b.dataset.dec, -1);
+            if (b.dataset.del) { delete cart[b.dataset.del]; renderCart(); }
+        });
+
+        $("filters").addEventListener("click", e => {
+            const b = e.target.closest("button");
+            if (!b) return;
+            document.querySelectorAll("#filters button").forEach(x => x.classList.remove("on"));
+            b.classList.add("on");
+            cat = b.dataset.cat;
+            renderDishes();
+        });
+
+        $("search").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); renderDishes(); });
+
+        $("navToggle").addEventListener("click", () => {
+            const open = $("navLinks").classList.toggle("open");
+            $("navToggle").setAttribute("aria-expanded", open);
+        });
+
+        $("checkoutForm").addEventListener("submit", e => {
+            e.preventDefault();
+            const name = $("name"), phone = $("phone"), address = $("address"), email = $("email");
+            let ok = true;
+            [name, phone, address, email].forEach(el => el.classList.remove("bad"));
+            if (!name.value.trim()) { name.classList.add("bad"); ok = false; }
+            if (!/^[6-9]\d{9}$/.test(phone.value.trim())) { phone.classList.add("bad"); ok = false; }
+            if (!address.value.trim()) { address.classList.add("bad"); ok = false; }
+            if (email.value && !email.checkValidity()) { email.classList.add("bad"); ok = false; }
+            if (!ok) { toast("Please fill in the highlighted fields"); return; }
+
+            const pay = document.querySelector('input[name="pay"]:checked').value;
+            $("successMsg").textContent = `Thanks ${name.value.trim()}! Your order of ${$("grandTotal").textContent} (${pay}) has been placed. We'll call ${phone.value.trim()} to confirm.`;
+            $("orderPanel").style.display = "none";
+            $("success").classList.add("show");
+            cart = {}; renderCart();
+        });
+
+        renderDishes();
+        renderCart();
+    </script>
 </body>
 
 </html>
