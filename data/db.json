@@ -728,7 +728,7 @@
       "tax": 9.95,
       "deliveryFee": 30,
       "grandTotal": 238.95,
-      "status": "Delivered",
+      "status": "Preparing",
       "deliveryPartner": {
         "name": "Sayan Mukherjee",
         "phone": "+91 98555 66778",
