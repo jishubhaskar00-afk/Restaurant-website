@@ -699,6 +699,56 @@
   ],
   "orders": [
     {
+      "id": "ORD-3940",
+      "userId": "user_1794568108068",
+      "customerName": "Jishu Bhaskar",
+      "phone": "9907044676",
+      "email": "jishubhaskar328@gmail.com",
+      "address": "jangipur,murshidabad,742213",
+      "orderType": "delivery",
+      "timeSlot": "Instant ASAP (25-35 min)",
+      "instructions": "",
+      "paymentMethod": "Cash on Delivery",
+      "paymentStatus": "Paid (COD Collected)",
+      "items": [
+        {
+          "id": 12,
+          "name": "Milkshakes",
+          "unitPrice": 120,
+          "qty": 1,
+          "size": "Standard",
+          "spice": "Medium",
+          "addons": [],
+          "total": 120
+        },
+        {
+          "id": 7,
+          "name": "Momos",
+          "unitPrice": 70,
+          "qty": 1,
+          "size": "Standard",
+          "spice": "Medium",
+          "addons": [],
+          "total": 70
+        }
+      ],
+      "subtotal": 190,
+      "discount": 0,
+      "coupon": "",
+      "tax": 9.5,
+      "deliveryFee": 30,
+      "grandTotal": 229.5,
+      "status": "Delivered",
+      "deliveryPartner": {
+        "name": "Amit Mondal",
+        "phone": "+91 98333 44556",
+        "vehicle": "Hero Splendor (WB-01-AZ-7721)",
+        "rating": 4.8
+      },
+      "createdAt": "2026-11-13T12:01:13.925Z",
+      "estimatedDelivery": "Delivered"
+    },
+    {
       "id": "ORD-5908",
       "userId": "guest",
       "customerName": "Jishu Bhaskar",
