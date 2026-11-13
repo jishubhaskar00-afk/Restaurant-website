@@ -1,0 +1,25 @@
+{
+  "name": "ja-restaurant-food-ordering-system",
+  "version": "1.0.0",
+  "description": "Online Food Ordering and Restaurant Management System - ARDENT Industrial Internship 2026",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test tests/api.test.js"
+  },
+  "keywords": [
+    "restaurant",
+    "food-ordering",
+    "express",
+    "full-stack",
+    "pwa",
+    "ardent"
+  ],
+  "author": "JISHU BHASKAR",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
