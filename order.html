@@ -5,15 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Your Order | JA Restaurant</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fac031">
     <link rel="stylesheet" href="order_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
+    <!-- Site Header -->
     <header class="site_header">
         <nav class="navbar">
             <a class="brand" href="index.html#Home" aria-label="JA Restaurant home">
-                <img src="images/logo1.png" alt="" onerror="this.style.display='none'">
+                <img src="images/logo1.png" alt="JA Logo" onerror="this.style.display='none'">
                 <span>JA <b>Restaurant</b></span>
             </a>
 
@@ -27,33 +30,50 @@
                 <li><a href="index.html#Menu">Menu</a></li>
                 <li><a href="index.html#Gallary">Gallery</a></li>
                 <li><a href="index.html#Review">Reviews</a></li>
-                <li><a class="active" href="order.html">Order</a></li>
+                <li><a class="active" href="order.html">Order Online</a></li>
+                <li><a href="dashboard.html" style="color:#b45309;"><i class="fa-solid fa-gauge"></i> Partner Portal</a></li>
             </ul>
-            <a class="nav-cart" id="navCart" href="#your-order" aria-label="Go to your order">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span id="navItemCount">0</span>
-            </a>
+
+            <div class="user-bar-container">
+                <!-- User Profile / Auth Area -->
+                <div id="authContainer">
+                    <button class="auth-btn-pill" id="btnLoginModal"><i class="fa-solid fa-user"></i> Login / Sign Up</button>
+                </div>
+
+                <!-- Nav Cart -->
+                <a class="nav-cart" id="navCart" href="#your-order" aria-label="Go to your order">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="navItemCount">0</span>
+                </a>
+            </div>
         </nav>
     </header>
 
     <main>
+        <!-- Hero & Outlet Selector -->
         <section class="order_hero">
-            <h1><span>Place Your</span>Order</h1>
-            <p>Pick your favourites, adjust the quantity, and tell us where to deliver. Fresh food, hot at your door.</p>
-            <div class="demo_note">
-                <i class="fa-solid fa-circle-info"></i>
-                Demo project – no real orders are taken. Please don't enter real personal details.
+            <h1><span>Order Fresh</span>Food Online</h1>
+            <p>Select your favorite restaurant outlet, customize toppings and spice levels, and get it delivered hot or pick it up fresh.</p>
+
+            <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                <label for="outletSelect" style="font-size: 13px; font-weight: 600;"><i class="fa-solid fa-location-dot"></i> Select Outlet:</label>
+                <select id="outletSelect" class="outlet-select">
+                    <!-- Populated dynamically -->
+                </select>
+                <button class="btn-secondary" id="btnOpenHistory" style="padding: 6px 14px; border-radius: 20px; font-size: 13px;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> My Orders
+                </button>
             </div>
         </section>
 
         <div class="order_layout">
 
-            <!-- Menu picker -->
+            <!-- Left: Menu Directory & Dishes -->
             <section>
                 <div class="picker_top">
                     <div class="search_box">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="search" id="search" placeholder="Search dishes...">
+                        <input type="search" id="search" placeholder="Search dishes by name or ingredients...">
                     </div>
                     <div class="filters" id="filters">
                         <button class="on" data-cat="all">All</button>
@@ -61,27 +81,57 @@
                         <button data-cat="main">Mains</button>
                         <button data-cat="snack">Snacks</button>
                         <button data-cat="drink">Drinks</button>
+                        <button data-cat="favs"><i class="fa-solid fa-heart" style="color:#ef4444;"></i> Favorites</button>
+                        <button data-cat="veg">🟢 Veg Only</button>
                     </div>
                 </div>
-                <div class="dish_grid" id="dishGrid"></div>
+
+                <div class="dish_grid" id="dishGrid">
+                    <!-- Dishes dynamically loaded -->
+                </div>
             </section>
 
-            <!-- Cart + checkout -->
+            <!-- Right: Cart & Multi-Step Checkout -->
             <aside class="your_order" id="your-order">
                 <h2><span>Your</span> Order</h2>
 
                 <div id="orderPanel">
-                    <div class="cart_list" id="cartList"></div>
-
-                    <div class="summary">
-                        <div><span>Subtotal</span><span id="subTotal">₹0.00</span></div>
-                        <div><span>Delivery</span><span id="delivery">₹0.00</span></div>
-                        <div class="total"><span>Total</span><span id="grandTotal">₹0.00</span></div>
+                    <!-- Delivery vs. Pickup Switch -->
+                    <div class="order-type-switch">
+                        <button type="button" class="order-type-btn active" id="btnTypeDelivery" onclick="setOrderType('delivery')">
+                            <i class="fa-solid fa-truck"></i> Home Delivery
+                        </button>
+                        <button type="button" class="order-type-btn" id="btnTypePickup" onclick="setOrderType('pickup')">
+                            <i class="fa-solid fa-bag-shopping"></i> Takeaway / Pickup
+                        </button>
                     </div>
 
+                    <!-- Cart Item List -->
+                    <div class="cart_list" id="cartList"></div>
+
+                    <!-- Coupon Code Section -->
+                    <div class="coupon-box" id="couponBox">
+                        <input type="text" id="couponInput" placeholder="Promo / Coupon code (e.g. WELCOME50)">
+                        <button type="button" id="btnApplyCoupon">Apply</button>
+                    </div>
+                    <div id="appliedCouponBadge" style="display:none;" class="coupon-badge">
+                        <span><i class="fa-solid fa-tag"></i> Coupon <b id="appliedCouponName"></b> Applied!</span>
+                        <button type="button" onclick="removeCoupon()" style="background:none;border:none;cursor:pointer;color:#166534;font-weight:bold;">&times;</button>
+                    </div>
+
+                    <!-- Itemized Cost Summary -->
+                    <div class="summary">
+                        <div><span>Subtotal</span><span id="subTotal">₹0.00</span></div>
+                        <div id="discountRow" style="display:none; color:#16a34a;"><span>Promo Discount</span><span id="discountVal">-₹0.00</span></div>
+                        <div><span>Delivery Fee</span><span id="delivery">₹0.00</span></div>
+                        <div><span>Taxes (GST 5%)</span><span id="taxVal">₹0.00</span></div>
+                        <div class="total"><span>Grand Total</span><span id="grandTotal">₹0.00</span></div>
+                    </div>
+
+                    <!-- Streamlined Checkout Form -->
                     <form class="checkout" id="checkoutForm" novalidate>
                         <div class="input">
-                            <p>Name</p>
+                            <p>Full Name</p>
                             <input type="text" id="name" placeholder="your name" required>
                         </div>
                         <div class="input">
@@ -89,183 +139,1234 @@
                             <input type="tel" id="phone" placeholder="10-digit mobile number" inputmode="numeric" maxlength="10" required>
                         </div>
                         <div class="input">
-                            <p>Email (optional)</p>
-                            <input type="email" id="email" placeholder="your email">
+                            <p>Email (optional for receipt)</p>
+                            <input type="email" id="email" placeholder="your email address">
                         </div>
-                        <div class="input">
+
+                        <div class="input" id="addressGroup">
                             <p>Delivery Address</p>
-                            <textarea id="address" placeholder="house no, street, landmark, town" required></textarea>
+                            <textarea id="address" placeholder="Flat / House no, street, landmark, area" required></textarea>
                         </div>
+
                         <div class="input">
-                            <p>Payment</p>
-                            <div class="pay_row">
-                                <label><input type="radio" name="pay" value="Cash on Delivery" checked>Cash</label>
-                                <label><input type="radio" name="pay" value="UPI">UPI</label>
-                                <label><input type="radio" name="pay" value="Card">Card</label>
+                            <p>Delivery / Pickup Instructions</p>
+                            <input type="text" id="instructions" placeholder="e.g. Ring doorbell, leave at front desk">
+                        </div>
+
+                        <div class="input">
+                            <p>Preferred Time Slot</p>
+                            <select id="timeSlot" class="outlet-select" style="width:100%; border-radius:6px; padding:9px;">
+                                <option value="Instant ASAP (25-35 min)">Instant ASAP (25-35 min)</option>
+                                <option value="Today Evening (7:00 PM - 8:00 PM)">Today Evening (7:00 PM - 8:00 PM)</option>
+                                <option value="Today Dinner (8:00 PM - 9:00 PM)">Today Dinner (8:00 PM - 9:00 PM)</option>
+                                <option value="Tomorrow Lunch (12:30 PM - 1:30 PM)">Tomorrow Lunch (12:30 PM - 1:30 PM)</option>
+                            </select>
+                        </div>
+
+                        <div class="input">
+                            <p>Payment Method</p>
+                            <div class="payment-selector">
+                                <label class="pay-card-label selected" onclick="selectPayment('cod')">
+                                    <input type="radio" name="pay" value="Cash on Delivery" checked>
+                                    <span><i class="fa-solid fa-money-bill-wave"></i> COD / Cash</span>
+                                </label>
+                                <label class="pay-card-label" onclick="selectPayment('upi')">
+                                    <input type="radio" name="pay" value="UPI (Google Pay / PhonePe)">
+                                    <span><i class="fa-brands fa-google-pay"></i> UPI / Wallets</span>
+                                </label>
+                                <label class="pay-card-label" onclick="selectPayment('card')">
+                                    <input type="radio" name="pay" value="Credit/Debit Card">
+                                    <span><i class="fa-solid fa-credit-card"></i> Card</span>
+                                </label>
+                                <label class="pay-card-label" onclick="selectPayment('gateway')">
+                                    <input type="radio" name="pay" value="Online Gateway (Stripe / PayPal)">
+                                    <span><i class="fa-brands fa-stripe"></i> Gateway</span>
+                                </label>
+                            </div>
+
+                            <!-- Interactive Card Inputs -->
+                            <div class="pay-extra-fields" id="cardFields">
+                                <p style="font-size:12px; font-weight:600; margin-bottom:6px;">Card Information (Mock Secure)</p>
+                                <input type="text" placeholder="Card Number (4242 •••• •••• 4242)" maxlength="19" style="width:100%; padding:6px; margin-bottom:6px; font-size:12px;">
+                                <div style="display:flex; gap:6px;">
+                                    <input type="text" placeholder="MM/YY" maxlength="5" style="width:50%; padding:6px; font-size:12px;">
+                                    <input type="text" placeholder="CVV" maxlength="3" style="width:50%; padding:6px; font-size:12px;">
+                                </div>
+                            </div>
+
+                            <!-- Interactive UPI Inputs -->
+                            <div class="pay-extra-fields" id="upiFields">
+                                <p style="font-size:12px; font-weight:600; margin-bottom:6px;">Instant UPI ID or Scan QR</p>
+                                <input type="text" id="upiIdInput" placeholder="yourname@okaxis / @okhdfcbank" style="width:100%; padding:6px; font-size:12px;">
                             </div>
                         </div>
-                        <p class="demo_small">Demo project – no real orders are taken.</p>
+
+                        <p class="demo_small">Secure checkout with instant order confirmation and live delivery tracking.</p>
                         <button type="submit" class="place_btn" id="placeBtn" disabled>
-                            Place Order <i class="fa-solid fa-angle-right"></i>
+                            Confirm & Place Order <i class="fa-solid fa-angle-right"></i>
                         </button>
                     </form>
                 </div>
 
+                <!-- Order Success Card -->
                 <div class="success" id="success">
                     <i class="fa-solid fa-circle-check"></i>
-                    <h3>Thank you!</h3>
+                    <h3>Order Confirmed!</h3>
                     <p id="successMsg"></p>
-                    <a href="index.html#Home">Back to Home</a>
+                    <button class="btn-primary" id="btnTrackLiveOrder" style="margin-top:14px; width:100%; justify-content:center;">
+                        <i class="fa-solid fa-location-crosshairs"></i> Track Live Delivery
+                    </button>
+                    <a href="order.html" style="display:inline-block; margin-top:10px; font-size:13px; color:var(--muted);">Order Another Meal</a>
                 </div>
             </aside>
         </div>
     </main>
 
+    <!-- Modal: Dish Customization -->
+    <div class="ja-modal-overlay" id="customModal">
+        <div class="ja-modal-card">
+            <div class="ja-modal-header">
+                <h3>Customize Your Dish</h3>
+                <button class="ja-modal-close" onclick="closeCustomModal()">&times;</button>
+            </div>
+            <div class="ja-modal-body">
+                <div class="custom-dish-banner">
+                    <img id="customDishImg" src="" alt="dish">
+                    <div>
+                        <h4 id="customDishName">Dish Name</h4>
+                        <span id="customDishType"></span>
+                        <div class="price" id="customDishBasePrice">₹0.00</div>
+                    </div>
+                </div>
+
+                <div class="custom-section">
+                    <label>Choose Portion Size</label>
+                    <div class="custom-options-grid" id="customSizesList"></div>
+                </div>
+
+                <div class="custom-section">
+                    <label>Select Spice Level</label>
+                    <div class="custom-options-grid" id="customSpiceList"></div>
+                </div>
+
+                <div class="custom-section">
+                    <label>Add Extra Toppings & Sides (Optional)</label>
+                    <div class="custom-options-grid" id="customAddonsList"></div>
+                </div>
+
+                <button class="btn-primary" id="btnConfirmCustomAdd" style="width:100%; justify-content:center; padding:12px; margin-top:10px;">
+                    Add to Cart • <span id="customModalTotalPrice">₹0.00</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Real-Time Order Tracking -->
+    <div class="ja-modal-overlay" id="trackModal">
+        <div class="ja-modal-card">
+            <div class="ja-modal-header">
+                <h3><i class="fa-solid fa-map-location-dot" style="color:var(--brand);"></i> Live Order Tracking</h3>
+                <button class="ja-modal-close" onclick="closeTrackModal()">&times;</button>
+            </div>
+            <div class="ja-modal-body">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:12px;">
+                    <div>
+                        <div style="font-size:16px; font-weight:700;" id="trackOrderId">ORD-9281</div>
+                        <div style="font-size:12px; color:var(--muted);" id="trackTimeSlot">Estimated arrival: 25-35 min</div>
+                    </div>
+                    <span class="status-badge Confirmed" id="trackStatusBadge">Confirmed</span>
+                </div>
+
+                <!-- Visual Stepper -->
+                <div class="tracking-stepper">
+                    <div class="step-item" id="step1">
+                        <div class="step-dot"></div>
+                        <div class="step-title">Order Placed & Confirmed</div>
+                        <div class="step-desc">Your order has been verified by the restaurant.</div>
+                    </div>
+                    <div class="step-item" id="step2">
+                        <div class="step-dot"></div>
+                        <div class="step-title">Preparing in Kitchen</div>
+                        <div class="step-desc">Chef is handcrafting your meal with fresh ingredients.</div>
+                    </div>
+                    <div class="step-item" id="step3">
+                        <div class="step-dot"></div>
+                        <div class="step-title">Out for Delivery</div>
+                        <div class="step-desc">Delivery partner is on the way to your doorstep.</div>
+                    </div>
+                    <div class="step-item" id="step4">
+                        <div class="step-dot"></div>
+                        <div class="step-title">Delivered</div>
+                        <div class="step-desc">Food handed over safely. Enjoy your meal!</div>
+                    </div>
+                </div>
+
+                <!-- Rider Info Card -->
+                <div class="rider-card" id="trackRiderCard">
+                    <div class="rider-avatar"><i class="fa-solid fa-motorcycle"></i></div>
+                    <div class="rider-info" style="flex:1;">
+                        <h5 id="trackRiderName">Rahul Sharma</h5>
+                        <p id="trackRiderVehicle">Honda Activa (WB-02-AK-4190)</p>
+                        <p style="color:#f59e0b; font-weight:600;"><i class="fa-solid fa-star"></i> 4.9 · Verified Partner</p>
+                    </div>
+                    <a id="trackRiderCall" href="tel:+919811122334" class="btn-secondary" style="padding:6px 12px; border-radius:20px; font-size:12px;">
+                        <i class="fa-solid fa-phone"></i> Call
+                    </a>
+                </div>
+
+                <div style="margin-top:16px; display:flex; gap:10px;">
+                    <button class="btn-secondary" style="flex:1; justify-content:center;" onclick="closeTrackModal()">Done</button>
+                    <button class="btn-primary" style="flex:1; justify-content:center;" id="btnSimulateAdvance">Simulate Next Step</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Order History & Past Orders -->
+    <div class="ja-modal-overlay" id="historyModal">
+        <div class="ja-modal-card" style="max-width: 600px;">
+            <div class="ja-modal-header">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Your Order History</h3>
+                <button class="ja-modal-close" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            <div class="ja-modal-body" id="historyListContainer">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Rate & Review -->
+    <div class="ja-modal-overlay" id="reviewModal">
+        <div class="ja-modal-card">
+            <div class="ja-modal-header">
+                <h3>Rate & Review Your Experience</h3>
+                <button class="ja-modal-close" onclick="closeReviewModal()">&times;</button>
+            </div>
+            <div class="ja-modal-body">
+                <form id="reviewForm">
+                    <div class="form-group" style="text-align:center; margin-bottom:16px;">
+                        <label style="display:block; margin-bottom:8px;">Your Rating</label>
+                        <div id="starRatingSelect" style="font-size:28px; color:#f59e0b; cursor:pointer;">
+                            <i class="fa-solid fa-star" data-val="1"></i>
+                            <i class="fa-solid fa-star" data-val="2"></i>
+                            <i class="fa-solid fa-star" data-val="3"></i>
+                            <i class="fa-solid fa-star" data-val="4"></i>
+                            <i class="fa-solid fa-star" data-val="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label style="display:block; margin-bottom:6px;">Your Name</label>
+                        <input type="text" id="reviewAuthor" placeholder="your name" required style="width:100%; padding:8px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <label style="display:block; margin-bottom:6px;">Feedback & Review</label>
+                        <textarea id="reviewComment" rows="3" placeholder="Tell us about the taste, portion and delivery..." required style="width:100%; padding:8px; border:1px solid var(--line); border-radius:6px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: User Authentication (Login / Register) -->
+    <div class="ja-modal-overlay" id="authModal">
+        <div class="ja-modal-card" style="max-width: 440px;">
+            <div class="ja-modal-header">
+                <div style="display:flex; gap:12px;">
+                    <button type="button" id="tabBtnLogin" class="dash-tab active" style="padding:4px 8px; font-size:16px;" onclick="switchAuthTab('login')">Login</button>
+                    <button type="button" id="tabBtnRegister" class="dash-tab" style="padding:4px 8px; font-size:16px;" onclick="switchAuthTab('register')">Register</button>
+                </div>
+                <button class="ja-modal-close" onclick="closeAuthModal()">&times;</button>
+            </div>
+            <div class="ja-modal-body">
+                <!-- Social Login Buttons -->
+                <div style="display:flex; gap:10px; margin-bottom:16px;">
+                    <button type="button" class="btn-secondary" style="flex:1; justify-content:center; font-size:12px;" onclick="handleSocialLogin('Google')">
+                        <i class="fa-brands fa-google"></i> Google
+                    </button>
+                    <button type="button" class="btn-secondary" style="flex:1; justify-content:center; font-size:12px;" onclick="handleSocialLogin('Facebook')">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </button>
+                </div>
+                <div style="text-align:center; font-size:12px; color:var(--muted); margin-bottom:16px; position:relative;">
+                    <span>OR CONTINUE WITH EMAIL</span>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm">
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="e.g. debika@example.com" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Password</label>
+                        <input type="password" id="loginPass" placeholder="••••••••" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Log In to Account</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" style="display:none;">
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Full Name</label>
+                        <input type="text" id="regName" placeholder="Your Full Name" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Email Address</label>
+                        <input type="email" id="regEmail" placeholder="your@email.com" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Mobile Phone</label>
+                        <input type="tel" id="regPhone" placeholder="10-digit number" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Default Delivery Address</label>
+                        <input type="text" id="regAddress" placeholder="Street, Flat, Area" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Password</label>
+                        <input type="password" id="regPass" placeholder="Choose a secure password" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Create Account (2FA Verified)</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: 2FA / Verification Code -->
+    <div class="ja-modal-overlay" id="otpModal">
+        <div class="ja-modal-card" style="max-width: 400px; text-align:center;">
+            <div class="ja-modal-header">
+                <h3>Two-Factor Verification</h3>
+                <button class="ja-modal-close" onclick="closeOtpModal()">&times;</button>
+            </div>
+            <div class="ja-modal-body">
+                <i class="fa-solid fa-shield-halved" style="font-size:40px; color:var(--brand); margin-bottom:12px;"></i>
+                <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">
+                    We've sent a 6-digit security code to your email. Enter it below to protect your transactions.
+                </p>
+                <div style="background:#fff8e1; border:1px dashed var(--brand); border-radius:8px; padding:8px; margin-bottom:14px; font-size:12px;">
+                    Demo Code: <b id="demoOtpBadge" style="letter-spacing:2px; font-size:14px;">123456</b>
+                </div>
+                <form id="otpForm">
+                    <input type="text" id="otpInput" maxlength="6" placeholder="••••••" style="width:180px; text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold; padding:8px; border:2px solid var(--line); border-radius:8px; margin:0 auto 16px; display:block;">
+                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Verify & Complete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer class="order_footer">
-        Design by<span><i class="fa-solid fa-face-grin-wink"></i> JISHU BHASKAR</span>
+        Design by <span><i class="fa-solid fa-face-grin-wink"></i> JISHU BHASKAR</span>
+        <div style="font-size:12px; color:var(--muted); margin-top:6px;">
+            ARDENT Industrial Internship 2024 · Campus Recruitment Training Program
+        </div>
     </footer>
 
     <div class="toast" id="toast"></div>
 
+    <!-- App Bridge and Main Logic -->
+    <script src="app_bridge.js"></script>
     <script>
-        const DISHES = [
-            { id: 1, name: "Burger", price: 85, cat: "snack", img: "images/1.jpg" },
-            { id: 2, name: "Cheese Pizza", price: 249, cat: "main", img: "images/2.jpg" },
-            { id: 3, name: "Vegetable Chow Mein", price: 110, cat: "main", img: "images/3.jpg" },
-            { id: 4, name: "BBQ Chicken Drumsticks", price: 199, cat: "starter", img: "images/4.jpg" },
-            { id: 5, name: "Chicken Vegetable Soup", price: 90, cat: "starter", img: "images/5.jpg" },
-            { id: 6, name: "Chicken Biryani", price: 180, cat: "main", img: "images/6.jpg" },
-            { id: 7, name: "Momos", price: 70, cat: "snack", img: "images/7.jpg" },
-            { id: 8, name: "Aloo Paratha", price: 60, cat: "main", img: "images/8.jpg" },
-            { id: 9, name: "Butter Chicken", price: 220, cat: "main", img: "images/9.jpg" },
-            { id: 10, name: "Crispy Chicken Fries", price: 165, cat: "snack", img: "images/10.jpg" },
-            { id: 11, name: "Spicy Chicken Curry", price: 170, cat: "main", img: "images/11.jpg" },
-            { id: 12, name: "Milkshakes", price: 120, cat: "drink", img: "images/12.jpg" },
-            { id: 13, name: "Chicken Lollipop", price: 140, cat: "starter", img: "images/13.jpg" },
-            { id: 14, name: "Mixed Fried Rice", price: 190, cat: "main", img: "images/14.jpg" },
-            { id: 15, name: "Crispy Fried Fish", price: 260, cat: "main", img: "images/15.jpg" },
-            { id: 16, name: "Grilled Sandwich", price: 120, cat: "snack", img: "images/16.jpg" }
+        // Seed default dishes in case backend is offline
+        let DISHES = [
+            { id: 1, restaurantId: 1, name: "Burger", price: 85, cat: "snack", veg: false, img: "images/1.jpg", rating: 4.8, in_stock: true, desc: "A juicy burger with melted cheese and fresh garden greens." },
+            { id: 2, restaurantId: 2, name: "Cheese Pizza", price: 249, cat: "main", veg: true, img: "images/2.jpg", rating: 4.9, in_stock: true, desc: "Hand-stretched authentic crust loaded with 100% mozzarella cheese." },
+            { id: 3, restaurantId: 4, name: "Vegetable Chow Mein", price: 110, cat: "main", veg: true, img: "images/3.jpg", rating: 4.6, in_stock: true, desc: "Stir-fried noodles with bell peppers and a smoky wok glaze." },
+            { id: 4, restaurantId: 1, name: "BBQ Chicken Drumsticks", price: 199, cat: "starter", veg: false, img: "images/4.jpg", rating: 4.9, in_stock: true, desc: "Tender drumsticks coated in sticky sweet smoky barbecue glaze." },
+            { id: 5, restaurantId: 1, name: "Chicken Vegetable Soup", price: 90, cat: "starter", veg: false, img: "images/5.jpg", rating: 4.7, in_stock: true, desc: "A warm comforting bowl of chicken, carrots and potatoes." },
+            { id: 6, restaurantId: 3, name: "Chicken Biryani", price: 180, cat: "main", veg: false, img: "images/6.jpg", rating: 5.0, in_stock: true, desc: "Fragrant basmati rice layered with spiced dum chicken and saffron." },
+            { id: 7, restaurantId: 4, name: "Momos", price: 70, cat: "snack", veg: true, img: "images/7.jpg", rating: 4.8, in_stock: true, desc: "Soft steamed dumplings served with fiery chili dip." },
+            { id: 8, restaurantId: 1, name: "Aloo Paratha", price: 60, cat: "main", veg: true, img: "images/8.jpg", rating: 4.7, in_stock: true, desc: "Golden wheat flatbread stuffed with spiced potatoes and butter." },
+            { id: 9, restaurantId: 3, name: "Butter Chicken", price: 220, cat: "main", veg: false, img: "images/9.jpg", rating: 4.9, in_stock: true, desc: "Soft chicken simmered in rich creamy tomato and cashew gravy." },
+            { id: 10, restaurantId: 1, name: "Crispy Chicken Fries", price: 165, cat: "snack", veg: false, img: "images/10.jpg", rating: 4.8, in_stock: true, desc: "Golden crunchy chicken tenders with hot salted crinkle fries." },
+            { id: 11, restaurantId: 1, name: "Spicy Chicken Curry", price: 170, cat: "main", veg: false, img: "images/11.jpg", rating: 4.7, in_stock: true, desc: "Chicken and baby potatoes cooked in fiery aromatic masala." },
+            { id: 12, restaurantId: 1, name: "Milkshakes", price: 120, cat: "drink", veg: true, img: "images/12.jpg", rating: 4.9, in_stock: true, desc: "Thick creamy shakes with whipped cream and sprinkles." },
+            { id: 13, restaurantId: 1, name: "Chicken Lollipop", price: 140, cat: "starter", veg: false, img: "images/13.jpg", rating: 4.8, in_stock: true, desc: "Crunchy deep-fried chicken lollipops with spicy sauce." },
+            { id: 14, restaurantId: 4, name: "Mixed Fried Rice", price: 190, cat: "main", veg: false, img: "images/14.jpg", rating: 4.8, in_stock: true, desc: "Fluffy rice tossed with shrimp, chicken, eggs and veggies." },
+            { id: 15, restaurantId: 1, name: "Crispy Fried Fish", price: 260, cat: "main", veg: false, img: "images/15.jpg", rating: 4.9, in_stock: true, desc: "Whole bhetki fillet fried golden, served with mustard dip." },
+            { id: 16, restaurantId: 1, name: "Grilled Sandwich", price: 120, cat: "snack", veg: true, img: "images/16.jpg", rating: 4.7, in_stock: true, desc: "Toasted sandwich with melted cheese, fresh tomato and herbs." }
         ];
 
-        const DELIVERY_FEE = 30, FREE_DELIVERY_ABOVE = 500;
         const $ = id => document.getElementById(id);
-        const money = n => "₹" + n.toFixed(2);
+        const money = n => "₹" + Number(n || 0).toFixed(2);
 
-        let cart = {};
-        try { cart = JSON.parse(localStorage.getItem("ja_cart")) || {}; } catch (e) { }
-        let cat = "all", q = "";
+        // State
+        let cart = []; // array of items: { key, id, name, price, qty, size, spice, addons, addonTotal, img }
+        let currentOutlet = "all";
+        let currentCat = "all";
+        let searchQuery = "";
+        let orderType = "delivery"; // delivery or pickup
+        let appliedCoupon = null;
+        let discountAmount = 0;
+        let selectedPaymentMethod = "Cash on Delivery";
+        let customizingDish = null;
+        let activeTrackingOrder = null;
+        let trackingInterval = null;
+        let pendingVerificationEmail = null;
 
-        function save() { try { localStorage.setItem("ja_cart", JSON.stringify(cart)); } catch (e) { } }
+        // Load cart from storage
+        try { cart = JSON.parse(localStorage.getItem("ja_cart_v2")) || []; } catch(e) {}
+
+        function saveCart() {
+            try { localStorage.setItem("ja_cart_v2", JSON.stringify(cart)); } catch(e) {}
+        }
 
         function toast(msg) {
             const t = $("toast");
             t.textContent = msg;
             t.classList.add("show");
-            clearTimeout(toast.t);
-            toast.t = setTimeout(() => t.classList.remove("show"), 1800);
+            clearTimeout(toast.timer);
+            toast.timer = setTimeout(() => t.classList.remove("show"), 2200);
         }
 
-        function renderDishes() {
-            const list = DISHES.filter(d =>
-                (cat === "all" || d.cat === cat) && d.name.toLowerCase().includes(q));
-            $("dishGrid").innerHTML = list.length ? list.map(d => `
-                <div class="dish">
-                    <div class="dish_img"><img src="${d.img}" alt="${d.name}" loading="lazy"></div>
-                    <div class="dish_body">
-                        <h3>${d.name}</h3>
-                        <div class="price">${money(d.price)}</div>
-                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-                        <button class="add_btn" data-add="${d.id}"><i class="fa-solid fa-plus"></i>Add</button>
-                    </div>
-                </div>`).join("") : '<p class="no_result">No dishes found.</p>';
-        }
-
-        function renderCart() {
-            const ids = Object.keys(cart).filter(id => cart[id] > 0);
-            let sub = 0, count = 0;
-
-            $("cartList").innerHTML = ids.length ? ids.map(id => {
-                const d = DISHES.find(x => x.id == id);
-                const line = d.price * cart[id];
-                sub += line; count += cart[id];
-                return `
-                <div class="cart_item">
-                    <img src="${d.img}" alt="">
-                    <div><h4>${d.name}</h4><small>${money(d.price)} each · ${money(line)}</small></div>
-                    <div class="qty">
-                        <button data-dec="${id}" aria-label="Decrease">−</button>
-                        <b>${cart[id]}</b>
-                        <button data-inc="${id}" aria-label="Increase">+</button>
-                        <button class="remove_btn" data-del="${id}" aria-label="Remove"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>`;
-            }).join("") : `<div class="cart_empty"><i class="fa-solid fa-utensils"></i>Your cart is empty.<br>Add some tasty dishes!</div>`;
-
-            const fee = sub === 0 || sub >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE;
-            $("subTotal").textContent = money(sub);
-            $("delivery").textContent = sub >= FREE_DELIVERY_ABOVE ? "Free" : money(fee);
-            $("grandTotal").textContent = money(sub + fee);
-            $("navItemCount").textContent = count;
-            $("placeBtn").disabled = count === 0;
-            save();
-        }
-
-        function change(id, delta) {
-            cart[id] = Math.max(0, (cart[id] || 0) + delta);
-            if (!cart[id]) delete cart[id];
+        // Initialize Outlets & Menu
+        async function init() {
+            initAuthUI();
+            populateOutlets();
+            await fetchMenuFromServer();
+            renderDishes();
             renderCart();
         }
 
-        document.addEventListener("click", e => {
-            const b = e.target.closest("button");
-            if (!b) return;
-            if (b.dataset.add) {
-                change(b.dataset.add, 1);
-                const d = DISHES.find(x => x.id == b.dataset.add);
-                toast(d.name + " added to your order");
-                const c = $("navCart"); c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump");
+        function populateOutlets() {
+            const select = $("outletSelect");
+            select.innerHTML = '<option value="all">All Outlets (Flagship & Branches)</option>' +
+                AppBridge.DEFAULT_RESTAURANTS.map(r => `<option value="${r.id}">${r.name} (${r.deliveryTime})</option>`).join("");
+            select.addEventListener("change", e => {
+                currentOutlet = e.target.value;
+                renderDishes();
+            });
+        }
+
+        async function fetchMenuFromServer() {
+            try {
+                const res = await fetch('/api/menu');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.menu && data.menu.length) DISHES = data.menu;
+                }
+            } catch (e) {}
+        }
+
+        // Render Dishes
+        function renderDishes() {
+            const favs = AppBridge.getFavorites();
+            const list = DISHES.filter(d => {
+                const matchOutlet = currentOutlet === "all" || d.restaurantId == currentOutlet || !d.restaurantId;
+                const matchSearch = d.name.toLowerCase().includes(searchQuery) || (d.desc && d.desc.toLowerCase().includes(searchQuery));
+                let matchCat = true;
+                if (currentCat === "veg") matchCat = !!d.veg;
+                else if (currentCat === "favs") matchCat = favs.includes(d.id);
+                else if (currentCat !== "all") matchCat = d.cat === currentCat;
+                return matchOutlet && matchSearch && matchCat;
+            });
+
+            const grid = $("dishGrid");
+            if (!list.length) {
+                grid.innerHTML = '<p class="no_result" style="grid-column:1/-1; text-align:center; padding:40px; color:var(--muted);">No matching dishes found in this category.</p>';
+                return;
             }
-            if (b.dataset.inc) change(b.dataset.inc, 1);
-            if (b.dataset.dec) change(b.dataset.dec, -1);
-            if (b.dataset.del) { delete cart[b.dataset.del]; renderCart(); }
+
+            grid.innerHTML = list.map(d => {
+                const isFav = favs.includes(d.id);
+                const isOutOfStock = d.in_stock === false;
+                return `
+                <div class="dish ${isOutOfStock ? 'dish-out-of-stock' : ''}">
+                    <div class="dish_img" style="position:relative;">
+                        <img src="${d.img}" alt="${d.name}" loading="lazy" onerror="this.src='images/1.jpg'">
+                        <span class="dish-stock-tag ${isOutOfStock ? 'out' : ''}">${isOutOfStock ? 'Sold Out' : 'Fresh & Hot'}</span>
+                        <button type="button" class="dish-fav-btn ${isFav ? 'active' : ''}" onclick="handleToggleFav(${d.id}, event)" aria-label="Favorite">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="dish_body">
+                        <div>
+                            <span class="${d.veg ? 'badge-veg' : 'badge-nonveg'}">${d.veg ? 'VEG' : 'NON-VEG'}</span>
+                            <h3 style="display:inline; vertical-align:middle;">${d.name}</h3>
+                        </div>
+                        <p style="font-size:12px; color:var(--muted); margin:4px 0 8px; line-height:16px;">
+                            ${(d.desc || '').substring(0, 70)}...
+                        </p>
+                        <div class="price">${money(d.price)}</div>
+                        <div class="stars">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                            <span style="font-size:11px; color:var(--muted);">(${d.rating || 4.8})</span>
+                        </div>
+                        <div style="display:flex; gap:6px; margin-top:8px;">
+                            <button class="add_btn" style="flex:1;" onclick="openCustomModal(${d.id})" ${isOutOfStock ? 'disabled' : ''}>
+                                <i class="fa-solid fa-sliders"></i> Customize
+                            </button>
+                            <button class="add_btn" style="padding:6px 10px;" onclick="quickAdd(${d.id})" ${isOutOfStock ? 'disabled' : ''} title="Quick Add">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join("");
+        }
+
+        function handleToggleFav(id, ev) {
+            ev.stopPropagation();
+            const res = AppBridge.toggleFavorite(id);
+            toast(res ? "Added to your favorites ❤️" : "Removed from favorites");
+            renderDishes();
+        }
+
+        // Customization Modal
+        function openCustomModal(id) {
+            const d = DISHES.find(x => x.id === id);
+            if (!d) return;
+            customizingDish = d;
+
+            $("customDishImg").src = d.img;
+            $("customDishName").textContent = d.name;
+            $("customDishType").innerHTML = `<span class="${d.veg ? 'badge-veg' : 'badge-nonveg'}">${d.veg ? 'VEG' : 'NON-VEG'}</span>`;
+            $("customDishBasePrice").textContent = money(d.price);
+
+            // Populate Sizes
+            const sizes = (d.customizations && d.customizations.sizes) || [
+                { name: "Regular Standard", price: 0 },
+                { name: "Large Portion", price: Math.round(d.price * 0.4) }
+            ];
+            $("customSizesList").innerHTML = sizes.map((s, idx) => `
+                <label class="option-pill-label">
+                    <span><input type="radio" name="customSize" value="${s.price}" data-name="${s.name}" ${idx === 0 ? 'checked' : ''} onchange="updateCustomModalPrice()"> ${s.name}</span>
+                    <b>${s.price > 0 ? '+' + money(s.price) : 'Included'}</b>
+                </label>
+            `).join("");
+
+            // Populate Spice Levels
+            const spices = (d.customizations && d.customizations.spiceLevels) || ["Mild", "Medium Classic", "Extra Spicy"];
+            $("customSpiceList").innerHTML = spices.map((sp, idx) => `
+                <label class="option-pill-label">
+                    <span><input type="radio" name="customSpice" value="${sp}" ${idx === 0 ? 'checked' : ''}> ${sp}</span>
+                </label>
+            `).join("");
+
+            // Populate Addons
+            const addons = (d.customizations && d.customizations.addons) || [
+                { name: "Extra Melted Cheese", price: 25 },
+                { name: "Chef's Secret Dip", price: 20 },
+                { name: "Peri-Peri Seasoning", price: 15 }
+            ];
+            $("customAddonsList").innerHTML = addons.map(a => `
+                <label class="option-pill-label">
+                    <span><input type="checkbox" name="customAddon" value="${a.price}" data-name="${a.name}" onchange="updateCustomModalPrice()"> ${a.name}</span>
+                    <b>+${money(a.price)}</b>
+                </label>
+            `).join("");
+
+            updateCustomModalPrice();
+            $("customModal").classList.add("open");
+        }
+
+        function updateCustomModalPrice() {
+            if (!customizingDish) return;
+            let total = customizingDish.price;
+            const sizeRadio = document.querySelector('input[name="customSize"]:checked');
+            if (sizeRadio) total += parseFloat(sizeRadio.value || 0);
+
+            document.querySelectorAll('input[name="customAddon"]:checked').forEach(cb => {
+                total += parseFloat(cb.value || 0);
+            });
+            $("customModalTotalPrice").textContent = money(total);
+        }
+
+        function closeCustomModal() {
+            $("customModal").classList.remove("open");
+            customizingDish = null;
+        }
+
+        $("btnConfirmCustomAdd").addEventListener("click", () => {
+            if (!customizingDish) return;
+            const sizeRadio = document.querySelector('input[name="customSize"]:checked');
+            const sizeName = sizeRadio ? sizeRadio.dataset.name : "Regular";
+            const sizeExtra = sizeRadio ? parseFloat(sizeRadio.value || 0) : 0;
+
+            const spiceRadio = document.querySelector('input[name="customSpice"]:checked');
+            const spiceName = spiceRadio ? spiceRadio.value : "Medium";
+
+            const selectedAddons = [];
+            let addonTotal = 0;
+            document.querySelectorAll('input[name="customAddon"]:checked').forEach(cb => {
+                const p = parseFloat(cb.value || 0);
+                addonTotal += p;
+                selectedAddons.push({ name: cb.dataset.name, price: p });
+            });
+
+            const unitPrice = customizingDish.price + sizeExtra + addonTotal;
+            const itemKey = `${customizingDish.id}_${sizeName}_${spiceName}_${selectedAddons.map(a=>a.name).sort().join('-')}`;
+
+            const existing = cart.find(x => x.key === itemKey);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({
+                    key: itemKey,
+                    id: customizingDish.id,
+                    name: customizingDish.name,
+                    price: unitPrice,
+                    qty: 1,
+                    size: sizeName,
+                    spice: spiceName,
+                    addons: selectedAddons,
+                    img: customizingDish.img
+                });
+            }
+
+            toast(`${customizingDish.name} added to cart`);
+            closeCustomModal();
+            renderCart();
+            bumpCartNav();
         });
 
+        function quickAdd(id) {
+            const d = DISHES.find(x => x.id === id);
+            if (!d) return;
+            const itemKey = `${d.id}_standard`;
+            const existing = cart.find(x => x.key === itemKey);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({
+                    key: itemKey,
+                    id: d.id,
+                    name: d.name,
+                    price: d.price,
+                    qty: 1,
+                    size: "Standard",
+                    spice: "Medium",
+                    addons: [],
+                    img: d.img
+                });
+            }
+            toast(`${d.name} added to cart`);
+            renderCart();
+            bumpCartNav();
+        }
+
+        function bumpCartNav() {
+            const c = $("navCart");
+            c.classList.remove("bump");
+            void c.offsetWidth;
+            c.classList.add("bump");
+        }
+
+        // Cart Management
+        function renderCart() {
+            let sub = 0;
+            let count = 0;
+
+            $("cartList").innerHTML = cart.length ? cart.map((item, index) => {
+                const lineTotal = item.price * item.qty;
+                sub += lineTotal;
+                count += item.qty;
+                return `
+                <div class="cart_item">
+                    <img src="${item.img || 'images/1.jpg'}" alt="${item.name}" onerror="this.src='images/1.jpg'">
+                    <div>
+                        <h4>${item.name}</h4>
+                        <small style="color:var(--muted);">
+                            ${item.size ? item.size : ''} ${item.spice ? `· ${item.spice}` : ''}<br>
+                            ${money(item.price)} each · <b>${money(lineTotal)}</b>
+                        </small>
+                    </div>
+                    <div class="qty">
+                        <button type="button" onclick="changeQty(${index}, -1)" aria-label="Decrease">−</button>
+                        <b>${item.qty}</b>
+                        <button type="button" onclick="changeQty(${index}, 1)" aria-label="Increase">+</button>
+                        <button type="button" class="remove_btn" onclick="removeItem(${index})" aria-label="Remove"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join("") : `<div class="cart_empty"><i class="fa-solid fa-utensils"></i>Your cart is empty.<br>Add some delicious dishes!</div>`;
+
+            // Calculate Discount
+            calculateTotals(sub, count);
+            saveCart();
+        }
+
+        function changeQty(index, delta) {
+            if (!cart[index]) return;
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            renderCart();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function setOrderType(type) {
+            orderType = type;
+            $("btnTypeDelivery").classList.toggle("active", type === 'delivery');
+            $("btnTypePickup").classList.toggle("active", type === 'pickup');
+            $("addressGroup").style.display = type === 'pickup' ? 'none' : 'block';
+            renderCart();
+        }
+
+        function calculateTotals(sub, count) {
+            let discount = 0;
+            if (appliedCoupon && sub > 0) {
+                if (appliedCoupon.type === 'percent') {
+                    discount = Math.min((sub * appliedCoupon.value) / 100, appliedCoupon.maxDiscount || 100);
+                } else if (appliedCoupon.type === 'flat') {
+                    discount = appliedCoupon.value;
+                }
+            }
+
+            const deliveryFee = (orderType === 'pickup' || sub === 0 || sub >= 500) ? 0 : 30;
+            const taxableSub = Math.max(0, sub - discount);
+            const tax = Math.round(taxableSub * 0.05 * 100) / 100; // 5% GST
+            const grand = Math.max(0, taxableSub + deliveryFee + tax);
+
+            $("subTotal").textContent = money(sub);
+            if (discount > 0) {
+                $("discountRow").style.display = "flex";
+                $("discountVal").textContent = `-${money(discount)}`;
+            } else {
+                $("discountRow").style.display = "none";
+            }
+            $("delivery").textContent = orderType === 'pickup' ? 'Free (Pickup)' : (sub >= 500 ? 'Free' : money(deliveryFee));
+            $("taxVal").textContent = money(tax);
+            $("grandTotal").textContent = money(grand);
+            $("navItemCount").textContent = count;
+            $("placeBtn").disabled = count === 0;
+        }
+
+        // Coupon Handling
+        $("btnApplyCoupon").addEventListener("click", () => {
+            const code = $("couponInput").value.trim().toUpperCase();
+            if (!code) return;
+
+            const COUPONS = {
+                "WELCOME50": { code: "WELCOME50", type: "percent", value: 50, maxDiscount: 100, min: 199 },
+                "TASTY20": { code: "TASTY20", type: "percent", value: 20, maxDiscount: 150, min: 299 },
+                "FLAT50": { code: "FLAT50", type: "flat", value: 50, maxDiscount: 50, min: 300 }
+            };
+
+            const c = COUPONS[code];
+            if (!c) {
+                toast("Invalid promo code. Try WELCOME50 or FLAT50");
+                return;
+            }
+
+            const sub = cart.reduce((acc, it) => acc + it.price * it.qty, 0);
+            if (sub < c.min) {
+                toast(`Coupon requires minimum order of ₹${c.min}`);
+                return;
+            }
+
+            appliedCoupon = c;
+            $("appliedCouponName").textContent = c.code;
+            $("appliedCouponBadge").style.display = "flex";
+            $("couponBox").style.display = "none";
+            toast(`Coupon ${c.code} applied successfully!`);
+            renderCart();
+        });
+
+        function removeCoupon() {
+            appliedCoupon = null;
+            $("appliedCouponBadge").style.display = "none";
+            $("couponBox").style.display = "flex";
+            $("couponInput").value = "";
+            renderCart();
+        }
+
+        // Payment Selector
+        function selectPayment(mode) {
+            document.querySelectorAll('.pay-card-label').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            const radio = event.currentTarget.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                selectedPaymentMethod = radio.value;
+            }
+            $("cardFields").classList.toggle("open", mode === 'card');
+            $("upiFields").classList.toggle("open", mode === 'upi');
+        }
+
+        // Checkout Form Submit
+        $("checkoutForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            if (cart.length === 0) return;
+
+            const name = $("name");
+            const phone = $("phone");
+            const address = $("address");
+            const email = $("email");
+            let valid = true;
+
+            [name, phone, address, email].forEach(el => el.classList.remove("bad"));
+            if (!name.value.trim()) { name.classList.add("bad"); valid = false; }
+            if (!/^[6-9]\d{9}$/.test(phone.value.trim())) { phone.classList.add("bad"); valid = false; }
+            if (orderType !== 'pickup' && !address.value.trim()) { address.classList.add("bad"); valid = false; }
+            if (email.value && !email.checkValidity()) { email.classList.add("bad"); valid = false; }
+
+            if (!valid) {
+                toast("Please fill in the required fields correctly");
+                return;
+            }
+
+            const user = AppBridge.getCurrentUser();
+            const orderPayload = {
+                userId: user ? user.id : 'guest',
+                customerName: name.value.trim(),
+                phone: phone.value.trim(),
+                email: email.value.trim(),
+                address: orderType === 'pickup' ? 'Store Pickup' : address.value.trim(),
+                orderType,
+                deliveryInstructions: $("instructions").value.trim(),
+                preferredTimeSlot: $("timeSlot").value,
+                items: cart,
+                paymentMethod: selectedPaymentMethod,
+                couponCode: appliedCoupon ? appliedCoupon.code : ""
+            };
+
+            let placedOrder = null;
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderPayload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    placedOrder = data.order;
+                }
+            } catch (err) {}
+
+            if (!placedOrder) {
+                // Local fallback
+                placedOrder = {
+                    id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+                    ...orderPayload,
+                    status: "Confirmed",
+                    grandTotal: parseFloat($("grandTotal").textContent.replace("₹", "")),
+                    createdAt: new Date().toISOString(),
+                    deliveryPartner: {
+                        name: "Rahul Sharma",
+                        phone: "+91 98111 22334",
+                        vehicle: "Honda Activa (WB-02-AK-4190)",
+                        rating: 4.9
+                    }
+                };
+            }
+
+            AppBridge.saveLocalOrder(placedOrder);
+            activeTrackingOrder = placedOrder;
+
+            $("successMsg").textContent = `Thank you ${name.value.trim()}! Order ${placedOrder.id} has been placed via ${selectedPaymentMethod}. Total: ${$("grandTotal").textContent}.`;
+            $("orderPanel").style.display = "none";
+            $("success").classList.add("show");
+
+            cart = [];
+            renderCart();
+            toast("Order placed successfully!");
+        });
+
+        $("btnTrackLiveOrder").addEventListener("click", () => {
+            if (activeTrackingOrder) openTrackModal(activeTrackingOrder);
+        });
+
+        // Real-Time Order Tracking Modal
+        function openTrackModal(order) {
+            activeTrackingOrder = order;
+            $("trackOrderId").textContent = order.id;
+            $("trackTimeSlot").textContent = `Delivery Slot: ${order.timeSlot || 'Instant (25-35 min)'}`;
+            updateTrackStepperUI(order.status || "Confirmed");
+
+            if (order.deliveryPartner) {
+                $("trackRiderCard").style.display = "flex";
+                $("trackRiderName").textContent = order.deliveryPartner.name;
+                $("trackRiderVehicle").textContent = order.deliveryPartner.vehicle;
+                $("trackRiderCall").href = `tel:${order.deliveryPartner.phone}`;
+            } else {
+                $("trackRiderCard").style.display = "none";
+            }
+
+            $("trackModal").classList.add("open");
+        }
+
+        function updateTrackStepperUI(status) {
+            $("trackStatusBadge").textContent = status;
+            $("trackStatusBadge").className = `status-badge ${status.replace(/\s+/g, '_')}`;
+
+            const steps = ["step1", "step2", "step3", "step4"];
+            const orderIndex = { "Confirmed": 1, "Preparing": 2, "Out for Delivery": 3, "Delivered": 4 }[status] || 1;
+
+            steps.forEach((sId, idx) => {
+                const el = $(sId);
+                el.classList.remove("done", "active");
+                if (idx + 1 < orderIndex) {
+                    el.classList.add("done");
+                } else if (idx + 1 === orderIndex) {
+                    el.classList.add("active");
+                }
+            });
+        }
+
+        function closeTrackModal() {
+            $("trackModal").classList.remove("open");
+        }
+
+        // Simulate Status Progression
+        $("btnSimulateAdvance").addEventListener("click", () => {
+            if (!activeTrackingOrder) return;
+            const sequence = ["Confirmed", "Preparing", "Out for Delivery", "Delivered"];
+            let idx = sequence.indexOf(activeTrackingOrder.status);
+            if (idx < sequence.length - 1) {
+                idx++;
+                activeTrackingOrder.status = sequence[idx];
+                updateTrackStepperUI(activeTrackingOrder.status);
+                toast(`Order status changed to: ${activeTrackingOrder.status}`);
+
+                // Update server if running
+                fetch(`/api/orders/${activeTrackingOrder.id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: activeTrackingOrder.status })
+                }).catch(()=>{});
+            } else {
+                toast("Order has already been Delivered!");
+            }
+        });
+
+        // Past Orders & Reordering Modal
+        $("btnOpenHistory").addEventListener("click", async () => {
+            const container = $("historyListContainer");
+            container.innerHTML = '<p style="text-align:center; padding:20px;">Loading orders...</p>';
+            $("historyModal").classList.add("open");
+
+            let orders = [];
+            const user = AppBridge.getCurrentUser();
+            try {
+                const url = user ? `/api/orders/user/${user.id}` : '/api/orders';
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    orders = data.orders || [];
+                }
+            } catch(e) {}
+
+            if (!orders.length) {
+                orders = AppBridge.getLocalOrders();
+            }
+
+            if (!orders.length) {
+                container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--muted);">No past orders found. Place your first order today!</p>';
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => `
+                <div style="border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:12px; background:#fff;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <div>
+                            <b>${ord.id}</b> · <small style="color:var(--muted);">${new Date(ord.createdAt || Date.now()).toLocaleDateString()}</small>
+                        </div>
+                        <span class="status-badge ${(ord.status || 'Confirmed').replace(/\s+/g, '_')}">${ord.status}</span>
+                    </div>
+                    <div style="font-size:13px; color:var(--ink); margin-bottom:10px;">
+                        ${(ord.items || []).map(it => `${it.qty}x ${it.name}`).join(', ')}
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed var(--line); padding-top:10px;">
+                        <b>${money(ord.grandTotal)}</b>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="openTrackModalFromHistory('${ord.id}')">
+                                <i class="fa-solid fa-location-crosshairs"></i> Track
+                            </button>
+                            <button class="btn-primary" style="font-size:12px; padding:4px 10px;" onclick="reorderItems('${ord.id}')">
+                                <i class="fa-solid fa-rotate-right"></i> Reorder
+                            </button>
+                            <button class="btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="openReviewModal('${ord.id}')">
+                                <i class="fa-solid fa-star"></i> Review
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        });
+
+        function closeHistoryModal() {
+            $("historyModal").classList.remove("open");
+        }
+
+        window.openTrackModalFromHistory = function(orderId) {
+            closeHistoryModal();
+            const local = AppBridge.getLocalOrders().find(o => o.id === orderId);
+            if (local) openTrackModal(local);
+            else {
+                fetch(`/api/orders/${orderId}`).then(r => r.json()).then(d => {
+                    if (d.order) openTrackModal(d.order);
+                }).catch(()=>{});
+            }
+        };
+
+        window.reorderItems = function(orderId) {
+            const local = AppBridge.getLocalOrders().find(o => o.id === orderId);
+            if (local && local.items) {
+                local.items.forEach(it => {
+                    const match = DISHES.find(d => d.id == it.id);
+                    cart.push({
+                        key: `${it.id}_reorder_${Date.now()}`,
+                        id: it.id,
+                        name: it.name,
+                        price: it.price || it.unitPrice || 100,
+                        qty: it.qty || 1,
+                        size: it.size || 'Standard',
+                        spice: it.spice || 'Medium',
+                        addons: it.addons || [],
+                        img: match ? match.img : 'images/1.jpg'
+                    });
+                });
+                renderCart();
+                closeHistoryModal();
+                toast("Past order items added to cart!");
+            }
+        };
+
+        // Reviews Modal
+        let currentReviewRating = 5;
+        window.openReviewModal = function(orderId) {
+            closeHistoryModal();
+            $("reviewModal").classList.add("open");
+        };
+
+        function closeReviewModal() {
+            $("reviewModal").classList.remove("open");
+        }
+
+        $("starRatingSelect").addEventListener("click", e => {
+            const icon = e.target.closest('i');
+            if (!icon) return;
+            currentReviewRating = parseInt(icon.dataset.val, 10);
+            document.querySelectorAll("#starRatingSelect i").forEach((star, idx) => {
+                star.className = idx < currentReviewRating ? "fa-solid fa-star" : "fa-regular fa-star";
+            });
+        });
+
+        $("reviewForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const author = $("reviewAuthor").value.trim();
+            const comment = $("reviewComment").value.trim();
+            if (!author || !comment) return;
+
+            try {
+                await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author, rating: currentReviewRating, comment })
+                });
+            } catch (err) {}
+
+            toast("Thank you for your review! ⭐");
+            closeReviewModal();
+        });
+
+        // User Auth / Profile Management
+        function initAuthUI() {
+            const user = AppBridge.getCurrentUser();
+            const container = $("authContainer");
+            if (user) {
+                container.innerHTML = `
+                    <div class="user-profile-menu">
+                        <button class="user-profile-btn" onclick="toggleUserDropdown()">
+                            <i class="fa-solid fa-circle-user" style="color:var(--brand-dark); font-size:16px;"></i>
+                            <span>${user.name.split(' ')[0]}</span>
+                            <i class="fa-solid fa-angle-down" style="font-size:11px;"></i>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#your-order" onclick="document.getElementById('btnOpenHistory').click(); toggleUserDropdown();"><i class="fa-solid fa-clock-rotate-left"></i> My Orders</a>
+                            <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Partner Portal</a>
+                            <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
+                        </div>
+                    </div>`;
+                if ($("name")) $("name").value = user.name || "";
+                if ($("phone")) $("phone").value = user.phone || "";
+                if ($("email")) $("email").value = user.email || "";
+                if ($("address")) $("address").value = user.address || "";
+            } else {
+                container.innerHTML = `<button class="auth-btn-pill" id="btnLoginModal" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> Login / Sign Up</button>`;
+            }
+        }
+
+        window.toggleUserDropdown = function() {
+            const d = $("userDropdown");
+            if (d) d.classList.toggle("show");
+        };
+
+        window.handleLogout = function() {
+            AppBridge.setCurrentUser(null);
+            toast("Logged out successfully");
+            initAuthUI();
+        };
+
+        window.openAuthModal = function() {
+            $("authModal").classList.add("open");
+        };
+
+        function closeAuthModal() {
+            $("authModal").classList.remove("open");
+        }
+
+        window.switchAuthTab = function(tab) {
+            $("tabBtnLogin").classList.toggle("active", tab === 'login');
+            $("tabBtnRegister").classList.toggle("active", tab === 'register');
+            $("loginForm").style.display = tab === 'login' ? 'block' : 'none';
+            $("registerForm").style.display = tab === 'register' ? 'block' : 'none';
+        };
+
+        $("loginForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const email = $("loginEmail").value.trim();
+            const password = $("loginPass").value.trim();
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    AppBridge.setCurrentUser(data.user);
+                    toast("Login successful!");
+                    closeAuthModal();
+                    initAuthUI();
+                    return;
+                } else {
+                    toast(data.message || "Invalid credentials");
+                }
+            } catch (err) {
+                // Fallback demo user
+                AppBridge.setCurrentUser({ id: 'user_demo', name: email.split('@')[0], email, phone: '9876543210', address: 'Kolkata Central' });
+                toast("Welcome back!");
+                closeAuthModal();
+                initAuthUI();
+            }
+        });
+
+        $("registerForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const name = $("regName").value.trim();
+            const email = $("regEmail").value.trim();
+            const phone = $("regPhone").value.trim();
+            const address = $("regAddress").value.trim();
+            const password = $("regPass").value.trim();
+
+            pendingVerificationEmail = email;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, address, password })
+                });
+                const data = await res.json();
+                if (data.requiresVerification) {
+                    closeAuthModal();
+                    $("demoOtpBadge").textContent = data.demoOtp || "123456";
+                    $("otpModal").classList.add("open");
+                    return;
+                }
+            } catch (err) {}
+
+            closeAuthModal();
+            $("demoOtpBadge").textContent = "849201";
+            $("otpModal").classList.add("open");
+        });
+
+        function closeOtpModal() {
+            $("otpModal").classList.remove("open");
+        }
+
+        $("otpForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const otp = $("otpInput").value.trim();
+            if (!otp) return;
+
+            try {
+                const res = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: pendingVerificationEmail, otp })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    AppBridge.setCurrentUser(data.user);
+                    toast("Verification successful! Welcome!");
+                    closeOtpModal();
+                    initAuthUI();
+                    return;
+                } else {
+                    toast(data.message || "Invalid OTP code");
+                }
+            } catch(e) {}
+
+            // Demo success
+            AppBridge.setCurrentUser({
+                id: 'user_' + Date.now(),
+                name: $("regName").value || "Valued Customer",
+                email: pendingVerificationEmail || "user@example.com",
+                phone: $("regPhone").value || "",
+                address: $("regAddress").value || ""
+            });
+            toast("2FA Verified! Welcome to JA Restaurant!");
+            closeOtpModal();
+            initAuthUI();
+        });
+
+        window.handleSocialLogin = function(provider) {
+            const demoUser = {
+                id: 'user_' + provider.toLowerCase() + '_' + Date.now(),
+                name: `${provider} User`,
+                email: `user.${provider.toLowerCase()}@gmail.com`,
+                phone: "9876543210",
+                address: "Park Street, Kolkata"
+            };
+            AppBridge.setCurrentUser(demoUser);
+            toast(`Logged in with ${provider}!`);
+            closeAuthModal();
+            initAuthUI();
+        };
+
+        // Filter buttons click handler
         $("filters").addEventListener("click", e => {
             const b = e.target.closest("button");
             if (!b) return;
             document.querySelectorAll("#filters button").forEach(x => x.classList.remove("on"));
             b.classList.add("on");
-            cat = b.dataset.cat;
+            currentCat = b.dataset.cat;
             renderDishes();
         });
 
-        $("search").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); renderDishes(); });
+        // Search listener
+        $("search").addEventListener("input", e => {
+            searchQuery = e.target.value.trim().toLowerCase();
+            renderDishes();
+        });
 
+        // Mobile Nav Toggle
         $("navToggle").addEventListener("click", () => {
             const open = $("navLinks").classList.toggle("open");
             $("navToggle").setAttribute("aria-expanded", open);
         });
 
-        $("checkoutForm").addEventListener("submit", e => {
-            e.preventDefault();
-            const name = $("name"), phone = $("phone"), address = $("address"), email = $("email");
-            let ok = true;
-            [name, phone, address, email].forEach(el => el.classList.remove("bad"));
-            if (!name.value.trim()) { name.classList.add("bad"); ok = false; }
-            if (!/^[6-9]\d{9}$/.test(phone.value.trim())) { phone.classList.add("bad"); ok = false; }
-            if (!address.value.trim()) { address.classList.add("bad"); ok = false; }
-            if (email.value && !email.checkValidity()) { email.classList.add("bad"); ok = false; }
-            if (!ok) { toast("Please fill in the highlighted fields"); return; }
+        // Start initialization
+        init();
 
-            const pay = document.querySelector('input[name="pay"]:checked').value;
-            $("successMsg").textContent = `Thanks ${name.value.trim()}! Your order of ${$("grandTotal").textContent} (${pay}) has been placed. We'll call ${phone.value.trim()} to confirm.`;
-            $("orderPanel").style.display = "none";
-            $("success").classList.add("show");
-            cart = {}; renderCart();
-        });
-
-        renderDishes();
-        renderCart();
+        // Check URL parameters for instant order tracking
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackParam = urlParams.get('track');
+        if (trackParam) {
+            setTimeout(() => {
+                openTrackModalFromHistory(trackParam);
+            }, 400);
+        }
     </script>
 </body>
 
