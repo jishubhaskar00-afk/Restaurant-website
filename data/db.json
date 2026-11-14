@@ -699,6 +699,46 @@
   ],
   "orders": [
     {
+      "id": "ORD-1393",
+      "userId": "guest",
+      "customerName": "Jishu Bhaskar",
+      "phone": "9907044676",
+      "email": "jishubhaskar328@gmail.com",
+      "address": "jangipur,murshidabad,742213",
+      "orderType": "delivery",
+      "timeSlot": "Instant ASAP (25-35 min)",
+      "instructions": "asljdxsjabdc",
+      "paymentMethod": "Cash on Delivery",
+      "paymentStatus": "Pending COD",
+      "items": [
+        {
+          "id": 6,
+          "name": "Chicken Biryani",
+          "unitPrice": 180,
+          "qty": 1,
+          "size": "Standard",
+          "spice": "Medium",
+          "addons": [],
+          "total": 180
+        }
+      ],
+      "subtotal": 180,
+      "discount": 0,
+      "coupon": "",
+      "tax": 9,
+      "deliveryFee": 30,
+      "grandTotal": 219,
+      "status": "Confirmed",
+      "deliveryPartner": {
+        "name": "Sayan Mukherjee",
+        "phone": "+91 98555 66778",
+        "vehicle": "Bajaj Pulsar (WB-06-KM-1234)",
+        "rating": 4.85
+      },
+      "createdAt": "2026-11-14T12:16:13.145Z",
+      "estimatedDelivery": "30-40 min"
+    },
+    {
       "id": "ORD-3940",
       "userId": "user_1794568108068",
       "customerName": "Jishu Bhaskar",
@@ -778,7 +818,7 @@
       "tax": 9.95,
       "deliveryFee": 30,
       "grandTotal": 238.95,
-      "status": "Preparing",
+      "status": "Delivered",
       "deliveryPartner": {
         "name": "Sayan Mukherjee",
         "phone": "+91 98555 66778",
