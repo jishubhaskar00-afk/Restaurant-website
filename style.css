@@ -1310,3 +1310,34 @@ footer .end {
     font-size: 14px;
     color: #6b7280;
 }
+
+/* footer quick link fix */
+html {
+  scroll-padding-top: 72px; /* account for fixed navbar height */
+}
+
+footer .footer_main .footer_tag p a {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: #4b5563 !important;
+  text-decoration: none !important;
+  font-size: 15px !important;
+  transition: color 0.2s, transform 0.2s !important;
+  cursor: pointer !important;
+}
+
+footer .footer_main .footer_tag p a:hover {
+  color: #d97706 !important;
+  transform: translateX(4px) !important;
+}
+
+footer .footer_main .footer_tag p a i {
+  color: #fac031 !important;
+  font-size: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+footer .footer_main .footer_tag p {
+  cursor: pointer !important;
+}
