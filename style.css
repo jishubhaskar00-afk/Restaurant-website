@@ -1226,3 +1226,87 @@ section nav {
 .track_form_mini button:hover {
     background: #e0a512;
 }
+
+/* =========================================================
+   FOOTER STYLING & GAPPING UPGRADE
+   ========================================================= */
+footer {
+    width: 100%;
+    padding: 50px 20px 20px !important;
+    background: #f4f4f5 !important;
+    border-top: 1px solid #e5e7eb;
+}
+
+footer .footer_main {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 36px !important;
+}
+
+footer .footer_main .footer_tag {
+    text-align: left !important;
+}
+
+footer .footer_main .footer_tag h2 {
+    color: #111827 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    margin-bottom: 20px !important;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+footer .footer_main .footer_tag h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 32px;
+    height: 3px;
+    background: #fac031;
+    border-radius: 2px;
+}
+
+footer .footer_main .footer_tag p {
+    margin: 8px 0 !important;
+    line-height: 1.6 !important;
+    font-size: 14px !important;
+    color: #4b5563;
+}
+
+footer .footer_main .footer_tag a {
+    color: #4b5563 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+}
+
+footer .footer_main .footer_tag a:hover {
+    color: #d97706 !important;
+    transform: translateX(4px);
+}
+
+footer .footer_main .footer_tag a i {
+    font-size: 12px;
+    color: #fac031;
+}
+
+footer .footer_main .footer_tag .social_icons {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+footer .end {
+    border-top: 1px solid #e5e7eb !important;
+    margin-top: 40px !important;
+    padding-top: 20px !important;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
