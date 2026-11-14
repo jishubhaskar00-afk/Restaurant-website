@@ -1568,3 +1568,19 @@ ul {
 .order_footer_links a:hover {
     color: #d97706;
 }
+
+/* brand underline fix */
+.brand,
+.brand:hover,
+.brand:focus {
+  text-decoration: none !important;
+}
+.brand::after,
+.brand span::after,
+.brand b::after {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
+}
