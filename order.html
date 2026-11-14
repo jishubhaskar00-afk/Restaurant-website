@@ -13,12 +13,12 @@
 </head>
 
 <body>
-    <div style="background:#fffbeb; color:#92400e; padding:8px 16px; text-align:center; font-size:12px; font-weight:600; border-bottom:1px solid #fde68a;"><i class="fa-solid fa-graduation-cap"></i> Academic Demonstration Project - ARDENT Internship 2024 (AICTE Approved). For educational review only.</div>
+    <div style="background:#fffbeb; color:#92400e; padding:8px 16px; text-align:center; font-size:12px; font-weight:600; border-bottom:1px solid #fde68a;"><i class="fa-solid fa-graduation-cap"></i> Academic Demonstration Project - ARDENT Internship 2026 (AICTE Approved). For educational review only.</div>
 
     <!-- Site Header -->
     <header class="site_header">
         <nav class="navbar">
-            <a class="brand" href="index.html#Home" aria-label="JA Restaurant home">
+            <a class="brand" href="index.html#Home" aria-label="home">
                 <img src="images/logo1.png" alt="JA Logo" onerror="this.style.display='none'">
                 <span>JA <b>Restaurant</b></span>
             </a>
@@ -133,13 +133,15 @@
 
                     <!-- Streamlined Checkout Form -->
                     <form class="checkout" id="checkoutForm" novalidate>
-                        <div class="input">
-                            <p>Full Name</p>
-                            <input type="text" id="name" placeholder="your name" required>
-                        </div>
-                        <div class="input">
-                            <p>Phone Number</p>
-                            <input type="tel" id="phone" placeholder="10-digit mobile number" inputmode="numeric" maxlength="10" required>
+                        <div class="checkout-row-2">
+                            <div class="input">
+                                <p>Full Name</p>
+                                <input type="text" id="name" placeholder="your name" required>
+                            </div>
+                            <div class="input">
+                                <p>Phone Number</p>
+                                <input type="tel" id="phone" placeholder="10-digit mobile" inputmode="numeric" maxlength="10" required>
+                            </div>
                         </div>
                         <div class="input">
                             <p>Email (optional for receipt)</p>
@@ -454,9 +456,19 @@
 
     <!-- Footer -->
     <footer class="order_footer">
-        Design by <span><i class="fa-solid fa-face-grin-wink"></i> JISHU BHASKAR</span>
-        <div style="font-size:12px; color:var(--muted); margin-top:6px;">
-            ARDENT Industrial Internship 2024 · Campus Recruitment Training Program
+        <div class="order_footer_links">
+            <a href="index.html#Home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="index.html#About">About Us</a>
+            <a href="index.html#Outlets">Outlets</a>
+            <a href="index.html#Menu">Menu</a>
+            <a href="index.html#Gallary">Gallery</a>
+            <a href="index.html#Review">Reviews</a>
+            <a href="order.html" style="color:#e0a512; font-weight:700;">Order Online</a>
+            <a href="dashboard.html" style="color:#b45309;"><i class="fa-solid fa-gauge"></i> Partner Portal</a>
+        </div>
+        <p style="text-align:center;">Design by <span><i class="fa-solid fa-face-grin-wink"></i> JISHU BHASKAR</span></p>
+        <div style="font-size:12px; color:#6b7280; margin-top:6px; text-align:center;">
+            ARDENT Industrial Internship 2026 · Campus Recruitment Training Program
         </div>
     </footer>
 
@@ -578,23 +590,24 @@
                         </button>
                     </div>
                     <div class="dish_body">
-                        <div>
+                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px;">
                             <span class="${d.veg ? 'badge-veg' : 'badge-nonveg'}">${d.veg ? 'VEG' : 'NON-VEG'}</span>
-                            <h3 style="display:inline; vertical-align:middle;">${d.name}</h3>
+                            <h3 style="margin:0; font-size:16px; font-weight:700; color:#111827;">${d.name}</h3>
                         </div>
-                        <p style="font-size:12px; color:var(--muted); margin:4px 0 8px; line-height:16px;">
-                            ${(d.desc || '').substring(0, 70)}...
+                        <p style="font-size:12px; color:#64748b; margin:6px 0 10px; line-height:1.5;">
+                            ${(d.desc || '').substring(0, 68)}...
                         </p>
-                        <div class="price">${money(d.price)}</div>
-                        <div class="stars">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-                            <span style="font-size:11px; color:var(--muted);">(${d.rating || 4.8})</span>
+                        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+                            <div class="price" style="font-size:17px; font-weight:800; color:#b45309;">${money(d.price)}</div>
+                            <div class="stars" style="color:#f59e0b; font-size:12px;">
+                                <i class="fa-solid fa-star"></i> ${d.rating || 4.8}
+                            </div>
                         </div>
-                        <div style="display:flex; gap:6px; margin-top:8px;">
-                            <button class="add_btn" style="flex:1;" onclick="openCustomModal(${d.id})" ${isOutOfStock ? 'disabled' : ''}>
+                        <div class="dish_actions_row">
+                            <button type="button" class="add_btn" style="flex:1;" onclick="openCustomModal(${d.id})" ${isOutOfStock ? 'disabled' : ''}>
                                 <i class="fa-solid fa-sliders"></i> Customize
                             </button>
-                            <button class="add_btn" style="padding:6px 10px;" onclick="quickAdd(${d.id})" ${isOutOfStock ? 'disabled' : ''} title="Quick Add">
+                            <button type="button" class="add_btn" style="padding:8px 14px; background:#f4f4f5; color:#111; border:1px solid #e4e4e7;" onclick="quickAdd(${d.id})" ${isOutOfStock ? 'disabled' : ''} title="Quick Add">
                                 <i class="fa-solid fa-plus"></i>
                             </button>
                         </div>
