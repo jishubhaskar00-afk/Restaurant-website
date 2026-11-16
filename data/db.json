@@ -755,6 +755,18 @@
       "socialProvider": null,
       "verified": true,
       "createdAt": "2026-11-16T10:05:03.988Z"
+    },
+    {
+      "id": "user_1794823577113",
+      "name": "Jishu Bhaskar",
+      "email": "jishubhaskar00@gmail.com",
+      "phone": "9907044676",
+      "address": "jangipur,murshidabad,742213",
+      "role": "customer",
+      "passwordHash": "jishu@060924",
+      "socialProvider": null,
+      "verified": true,
+      "createdAt": "2026-11-16T10:06:17.113Z"
     }
   ],
   "orders": [
