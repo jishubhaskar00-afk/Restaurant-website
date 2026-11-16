@@ -10,6 +10,13 @@
     <meta name="theme-color" content="#fac031">
     <link rel="stylesheet" href="order_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="app_bridge.js"></script>
+    <script>
+        // Enforce authentication gate: visitor cannot access order page without registering & signing in
+        if (!AppBridge.getCurrentUser()) {
+            window.location.replace("login.html?redirect=order.html");
+        }
+    </script>
 </head>
 
 <body>
@@ -38,10 +45,8 @@
             </ul>
 
             <div class="user-bar-container">
-                <!-- User Profile / Auth Area -->
-                <div id="authContainer">
-                    <button class="auth-btn-pill" id="btnLoginModal"><i class="fa-solid fa-user"></i> Login / Sign Up</button>
-                </div>
+                <!-- User Profile / Session Menu -->
+                <div id="authContainer"></div>
 
                 <!-- Nav Cart -->
                 <a class="nav-cart" id="navCart" href="#your-order" aria-label="Go to your order">
@@ -364,91 +369,6 @@
                         <textarea id="reviewComment" rows="3" placeholder="Tell us about the taste, portion and delivery..." required style="width:100%; padding:8px; border:1px solid var(--line); border-radius:6px;"></textarea>
                     </div>
                     <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Submit Review</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: User Authentication (Login / Register) -->
-    <div class="ja-modal-overlay" id="authModal">
-        <div class="ja-modal-card" style="max-width: 440px;">
-            <div class="ja-modal-header">
-                <div style="display:flex; gap:12px;">
-                    <button type="button" id="tabBtnLogin" class="dash-tab active" style="padding:4px 8px; font-size:16px;" onclick="switchAuthTab('login')">Login</button>
-                    <button type="button" id="tabBtnRegister" class="dash-tab" style="padding:4px 8px; font-size:16px;" onclick="switchAuthTab('register')">Register</button>
-                </div>
-                <button class="ja-modal-close" onclick="closeAuthModal()">&times;</button>
-            </div>
-            <div class="ja-modal-body">
-                <!-- Demo User Shortcuts -->
-                <div style="display:flex; gap:10px; margin-bottom:16px;">
-                    <button type="button" class="btn-secondary" style="flex:1; justify-content:center; font-size:12px;" onclick="handleQuickLogin('customer')">
-                        <i class="fa-solid fa-user-check"></i> Demo Customer
-                    </button>
-                    <button type="button" class="btn-secondary" style="flex:1; justify-content:center; font-size:12px;" onclick="handleQuickLogin('manager')">
-                        <i class="fa-solid fa-user-tie"></i> Demo Manager
-                    </button>
-                </div>
-
-                <!-- Login Form -->
-                <form id="loginForm">
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Email Address</label>
-                        <input type="email" id="loginEmail" placeholder="e.g. debika@example.com" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <div style="margin-bottom:16px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Password</label>
-                        <input type="text" id="loginPass" placeholder="••••••••" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Log In to Account</button>
-                </form>
-
-                <!-- Register Form -->
-                <form id="registerForm" style="display:none;">
-                    <div style="margin-bottom:10px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Full Name</label>
-                        <input type="text" id="regName" placeholder="Your Full Name" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <div style="margin-bottom:10px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Email Address</label>
-                        <input type="email" id="regEmail" placeholder="your@email.com" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <div style="margin-bottom:10px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Mobile Phone</label>
-                        <input type="tel" id="regPhone" placeholder="10-digit number" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <div style="margin-bottom:10px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Default Delivery Address</label>
-                        <input type="text" id="regAddress" placeholder="Street, Flat, Area" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <div style="margin-bottom:14px;">
-                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Password</label>
-                        <input type="text" id="regPass" placeholder="Choose a secure password" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px;">
-                    </div>
-                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Create Account (2FA Verified)</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: 2FA / Verification Code -->
-    <div class="ja-modal-overlay" id="otpModal">
-        <div class="ja-modal-card" style="max-width: 400px; text-align:center;">
-            <div class="ja-modal-header">
-                <h3>Two-Factor Verification</h3>
-                <button class="ja-modal-close" onclick="closeOtpModal()">&times;</button>
-            </div>
-            <div class="ja-modal-body">
-                <i class="fa-solid fa-shield-halved" style="font-size:40px; color:var(--brand); margin-bottom:12px;"></i>
-                <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">
-                    We've sent a 6-digit security code to your email. Enter it below to protect your transactions.
-                </p>
-                <div style="background:#fff8e1; border:1px dashed var(--brand); border-radius:8px; padding:8px; margin-bottom:14px; font-size:12px;">
-                    Demo Code: <b id="demoOtpBadge" style="letter-spacing:2px; font-size:14px;">123456</b>
-                </div>
-                <form id="otpForm">
-                    <input type="text" id="otpInput" maxlength="6" placeholder="••••••" style="width:180px; text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold; padding:8px; border:2px solid var(--line); border-radius:8px; margin:0 auto 16px; display:block;">
-                    <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Verify & Complete</button>
                 </form>
             </div>
         </div>
@@ -1176,31 +1096,38 @@
             closeReviewModal();
         });
 
-        // User Auth / Profile Management
+        // User Profile & Session Management (Login is done on login page)
         function initAuthUI() {
             const user = AppBridge.getCurrentUser();
             const container = $("authContainer");
-            if (user) {
-                container.innerHTML = `
-                    <div class="user-profile-menu">
-                        <button class="user-profile-btn" onclick="toggleUserDropdown()">
-                            <i class="fa-solid fa-circle-user" style="color:var(--brand-dark); font-size:16px;"></i>
-                            <span>${user.name.split(' ')[0]}</span>
-                            <i class="fa-solid fa-angle-down" style="font-size:11px;"></i>
-                        </button>
-                        <div class="user-dropdown" id="userDropdown">
-                            <a href="#your-order" onclick="document.getElementById('btnOpenHistory').click(); toggleUserDropdown();"><i class="fa-solid fa-clock-rotate-left"></i> My Orders</a>
-                            <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Partner Portal</a>
-                            <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
-                        </div>
-                    </div>`;
-                if ($("name")) $("name").value = user.name || "";
-                if ($("phone")) $("phone").value = user.phone || "";
-                if ($("email")) $("email").value = user.email || "";
-                if ($("address")) $("address").value = user.address || "";
-            } else {
-                container.innerHTML = `<button class="auth-btn-pill" id="btnLoginModal" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> Login / Sign Up</button>`;
+            if (!user) {
+                window.location.replace("login.html?redirect=order.html");
+                return;
             }
+
+            container.innerHTML = `
+                <div class="user-profile-menu">
+                    <button class="user-profile-btn" onclick="toggleUserDropdown()" title="User Account Menu">
+                        <i class="fa-solid fa-circle-user" style="color:var(--brand-dark); font-size:16px;"></i>
+                        <span>${user.name ? user.name.split(' ')[0] : 'Account'}</span>
+                        <i class="fa-solid fa-angle-down" style="font-size:11px;"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div style="padding:10px 14px; border-bottom:1px solid #f1f5f9; font-size:12px; color:#64748b; line-height:1.4;">
+                            <div style="font-weight:700; color:#0f172a;">${user.name || 'Member'}</div>
+                            <div style="font-size:11px;">${user.email}</div>
+                        </div>
+                        <a href="index.html"><i class="fa-solid fa-house"></i> Home Page</a>
+                        <a href="#your-order" onclick="document.getElementById('btnOpenHistory').click(); toggleUserDropdown();"><i class="fa-solid fa-clock-rotate-left"></i> My Past Orders</a>
+                        ${user.role === 'admin' ? '<a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Partner Portal</a>' : ''}
+                        <button onclick="handleLogout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
+                    </div>
+                </div>`;
+
+            if ($("name") && !$("name").value) $("name").value = user.name || "";
+            if ($("phone") && !$("phone").value) $("phone").value = user.phone || "";
+            if ($("email") && !$("email").value) $("email").value = user.email || "";
+            if ($("address") && !$("address").value) $("address").value = user.address || "";
         }
 
         window.toggleUserDropdown = function() {
@@ -1209,138 +1136,7 @@
         };
 
         window.handleLogout = function() {
-            AppBridge.setCurrentUser(null);
-            toast("Logged out successfully");
-            initAuthUI();
-        };
-
-        window.openAuthModal = function() {
-            $("authModal").classList.add("open");
-        };
-
-        function closeAuthModal() {
-            $("authModal").classList.remove("open");
-        }
-
-        window.switchAuthTab = function(tab) {
-            $("tabBtnLogin").classList.toggle("active", tab === 'login');
-            $("tabBtnRegister").classList.toggle("active", tab === 'register');
-            $("loginForm").style.display = tab === 'login' ? 'block' : 'none';
-            $("registerForm").style.display = tab === 'register' ? 'block' : 'none';
-        };
-
-        $("loginForm").addEventListener("submit", async e => {
-            e.preventDefault();
-            const email = $("loginEmail").value.trim();
-            const password = $("loginPass").value.trim();
-
-            try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    AppBridge.setCurrentUser(data.user);
-                    toast("Login successful!");
-                    closeAuthModal();
-                    initAuthUI();
-                    return;
-                } else {
-                    toast(data.message || "Invalid credentials");
-                }
-            } catch (err) {
-                // Fallback demo user
-                AppBridge.setCurrentUser({ id: 'user_demo', name: email.split('@')[0], email, phone: '9876543210', address: 'Kolkata Central' });
-                toast("Welcome back!");
-                closeAuthModal();
-                initAuthUI();
-            }
-        });
-
-        $("registerForm").addEventListener("submit", async e => {
-            e.preventDefault();
-            const name = $("regName").value.trim();
-            const email = $("regEmail").value.trim();
-            const phone = $("regPhone").value.trim();
-            const address = $("regAddress").value.trim();
-            const password = $("regPass").value.trim();
-
-            pendingVerificationEmail = email;
-
-            try {
-                const res = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, phone, address, password })
-                });
-                const data = await res.json();
-                if (data.requiresVerification) {
-                    closeAuthModal();
-                    $("demoOtpBadge").textContent = data.demoOtp || "123456";
-                    $("otpModal").classList.add("open");
-                    return;
-                }
-            } catch (err) {}
-
-            closeAuthModal();
-            $("demoOtpBadge").textContent = "849201";
-            $("otpModal").classList.add("open");
-        });
-
-        function closeOtpModal() {
-            $("otpModal").classList.remove("open");
-        }
-
-        $("otpForm").addEventListener("submit", async e => {
-            e.preventDefault();
-            const otp = $("otpInput").value.trim();
-            if (!otp) return;
-
-            try {
-                const res = await fetch('/api/auth/verify-otp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: pendingVerificationEmail, otp })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    AppBridge.setCurrentUser(data.user);
-                    toast("Verification successful! Welcome!");
-                    closeOtpModal();
-                    initAuthUI();
-                    return;
-                } else {
-                    toast(data.message || "Invalid OTP code");
-                }
-            } catch(e) {}
-
-            // Demo success
-            AppBridge.setCurrentUser({
-                id: 'user_' + Date.now(),
-                name: $("regName").value || "Valued Customer",
-                email: pendingVerificationEmail || "user@example.com",
-                phone: $("regPhone").value || "",
-                address: $("regAddress").value || ""
-            });
-            toast("2FA Verified! Welcome to JA Restaurant!");
-            closeOtpModal();
-            initAuthUI();
-        });
-
-        window.handleSocialLogin = function(provider) {
-            const demoUser = {
-                id: 'user_' + provider.toLowerCase() + '_' + Date.now(),
-                name: `${provider} User`,
-                email: `user.${provider.toLowerCase()}@gmail.com`,
-                phone: "9876543210",
-                address: "Park Street, Kolkata"
-            };
-            AppBridge.setCurrentUser(demoUser);
-            toast(`Logged in with ${provider}!`);
-            closeAuthModal();
-            initAuthUI();
+            AppBridge.logout();
         };
 
         // Filter buttons click handler
