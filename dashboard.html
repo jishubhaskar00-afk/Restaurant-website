@@ -7,6 +7,13 @@
     <title>Restaurant Management Dashboard | JA Restaurant</title>
     <link rel="stylesheet" href="dashboard_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="app_bridge.js"></script>
+    <script>
+        // Enforce authentication gate: visitor cannot access dashboard without registering & signing in
+        if (!AppBridge.getCurrentUser()) {
+            window.location.replace("login.html?redirect=dashboard.html");
+        }
+    </script>
 </head>
 
 <body>
@@ -25,6 +32,7 @@
                 <span class="badge-tag"><i class="fa-solid fa-circle-check"></i> System Online</span>
                 <a href="order.html" class="btn-secondary" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Customer Store</a>
                 <button class="btn-primary" id="btnOpenAddDish"><i class="fa-solid fa-plus"></i> Add Menu Dish</button>
+                <button class="btn-secondary" onclick="AppBridge.logout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
             </div>
         </div>
     </header>
