@@ -11,12 +11,6 @@
     <link rel="stylesheet" href="order_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="app_bridge.js"></script>
-    <script>
-        // Enforce authentication gate: visitor cannot access order page without registering & signing in
-        if (!AppBridge.getCurrentUser()) {
-            window.location.replace("login.html?redirect=order.html");
-        }
-    </script>
 </head>
 
 <body>
@@ -369,6 +363,68 @@
                         <textarea id="reviewComment" rows="3" placeholder="Tell us about the taste, portion and delivery..." required style="width:100%; padding:8px; border:1px solid var(--line); border-radius:6px;"></textarea>
                     </div>
                     <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: User Authentication (Login / Register) -->
+    <div class="ja-modal-overlay" id="orderAuthModal">
+        <div class="ja-modal-card" style="max-width: 440px;">
+            <div class="ja-modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; gap:12px;">
+                    <button type="button" id="tabBtnOrderLogin" class="dash-tab active" style="padding:4px 10px; font-size:16px; font-weight:700; border:none; background:transparent; cursor:pointer;" onclick="switchOrderAuthTab('login')">Sign In</button>
+                    <button type="button" id="tabBtnOrderRegister" class="dash-tab" style="padding:4px 10px; font-size:16px; font-weight:700; border:none; background:transparent; cursor:pointer; color:var(--muted);" onclick="switchOrderAuthTab('register')">Create Account</button>
+                </div>
+                <button class="ja-modal-close" onclick="closeAuthModal()" style="font-size:24px; border:none; background:none; cursor:pointer;">&times;</button>
+            </div>
+            <div class="ja-modal-body" style="padding:16px 20px 24px;">
+                <!-- Error / Success Alert in Modal -->
+                <div id="orderAuthAlert" style="display:none; padding:10px 14px; border-radius:8px; font-size:13px; margin-bottom:14px; line-height:1.4;"></div>
+
+                <!-- Sign In Form -->
+                <form id="orderLoginForm">
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Email Address</label>
+                        <input type="email" id="orderLoginEmail" placeholder="e.g. debika@example.com" required style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Password</label>
+                        <input type="password" id="orderLoginPass" placeholder="••••••••" required style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <button type="submit" class="btn-primary" id="btnOrderLoginSubmit" style="width:100%; justify-content:center; padding:11px; font-size:14px; font-weight:700; cursor:pointer;">Sign In</button>
+
+                    <!-- Quick Demo Credentials -->
+                    <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:11px; color:#64748b;">
+                        <b>Quick Demo:</b>
+                        <span style="cursor:pointer; color:var(--brand-dark); text-decoration:underline; margin-left:6px;" onclick="fillOrderDemo('debika@example.com', 'demo123')">Debika (demo123)</span> |
+                        <span style="cursor:pointer; color:var(--brand-dark); text-decoration:underline; margin-left:4px;" onclick="fillOrderDemo('admin@jarestaurant.com', 'admin123')">Admin</span>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="orderRegisterForm" style="display:none;">
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Full Name *</label>
+                        <input type="text" id="orderRegName" placeholder="Your Name" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Email Address *</label>
+                        <input type="email" id="orderRegEmail" placeholder="your@email.com" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Mobile Phone (Optional)</label>
+                        <input type="tel" id="orderRegPhone" placeholder="10-digit number" style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Password * (min. 6 chars)</label>
+                        <input type="password" id="orderRegPass" placeholder="Choose a password" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Confirm Password *</label>
+                        <input type="password" id="orderRegConfirmPass" placeholder="Repeat password" required style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <button type="submit" class="btn-primary" id="btnOrderRegSubmit" style="width:100%; justify-content:center; padding:11px; font-size:14px; font-weight:700; cursor:pointer;">Create Account & Sign In</button>
                 </form>
             </div>
         </div>
@@ -842,6 +898,12 @@
             }
 
             const user = AppBridge.getCurrentUser();
+            if (!user) {
+                toast("Please log in or register before placing your order!");
+                openAuthModal();
+                return;
+            }
+
             const orderPayload = {
                 userId: user ? user.id : 'guest',
                 customerName: name.value.trim(),
@@ -1096,38 +1158,40 @@
             closeReviewModal();
         });
 
-        // User Profile & Session Management (Login is done on login page)
+        // User Profile & Session Management for Order Page
         function initAuthUI() {
             const user = AppBridge.getCurrentUser();
             const container = $("authContainer");
-            if (!user) {
-                window.location.replace("login.html?redirect=order.html");
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="user-profile-menu">
-                    <button class="user-profile-btn" onclick="toggleUserDropdown()" title="User Account Menu">
-                        <i class="fa-solid fa-circle-user" style="color:var(--brand-dark); font-size:16px;"></i>
-                        <span>${user.name ? user.name.split(' ')[0] : 'Account'}</span>
-                        <i class="fa-solid fa-angle-down" style="font-size:11px;"></i>
-                    </button>
-                    <div class="user-dropdown" id="userDropdown">
-                        <div style="padding:10px 14px; border-bottom:1px solid #f1f5f9; font-size:12px; color:#64748b; line-height:1.4;">
-                            <div style="font-weight:700; color:#0f172a;">${user.name || 'Member'}</div>
-                            <div style="font-size:11px;">${user.email}</div>
+            if (user) {
+                container.innerHTML = `
+                    <div class="user-profile-menu">
+                        <button class="user-profile-btn" onclick="toggleUserDropdown()" title="User Account Menu">
+                            <i class="fa-solid fa-circle-user" style="color:var(--brand-dark); font-size:16px;"></i>
+                            <span>${user.name ? user.name.split(' ')[0] : 'Account'}</span>
+                            <i class="fa-solid fa-angle-down" style="font-size:11px;"></i>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <div style="padding:10px 14px; border-bottom:1px solid #f1f5f9; font-size:12px; color:#64748b; line-height:1.4;">
+                                <div style="font-weight:700; color:#0f172a;">${user.name || 'Member'}</div>
+                                <div style="font-size:11px;">${user.email}</div>
+                            </div>
+                            <a href="index.html"><i class="fa-solid fa-house"></i> Home Page</a>
+                            <a href="#your-order" onclick="document.getElementById('btnOpenHistory').click(); toggleUserDropdown();"><i class="fa-solid fa-clock-rotate-left"></i> My Past Orders</a>
+                            ${user.role === 'admin' ? '<a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Partner Portal</a>' : ''}
+                            <button onclick="handleLogout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
                         </div>
-                        <a href="index.html"><i class="fa-solid fa-house"></i> Home Page</a>
-                        <a href="#your-order" onclick="document.getElementById('btnOpenHistory').click(); toggleUserDropdown();"><i class="fa-solid fa-clock-rotate-left"></i> My Past Orders</a>
-                        ${user.role === 'admin' ? '<a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Partner Portal</a>' : ''}
-                        <button onclick="handleLogout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
-                    </div>
-                </div>`;
+                    </div>`;
 
-            if ($("name") && !$("name").value) $("name").value = user.name || "";
-            if ($("phone") && !$("phone").value) $("phone").value = user.phone || "";
-            if ($("email") && !$("email").value) $("email").value = user.email || "";
-            if ($("address") && !$("address").value) $("address").value = user.address || "";
+                if ($("name") && !$("name").value) $("name").value = user.name || "";
+                if ($("phone") && !$("phone").value) $("phone").value = user.phone || "";
+                if ($("email") && !$("email").value) $("email").value = user.email || "";
+                if ($("address") && !$("address").value) $("address").value = user.address || "";
+            } else {
+                container.innerHTML = `
+                    <button class="auth-btn-pill" id="btnLoginModal" onclick="openAuthModal()">
+                        <i class="fa-solid fa-user"></i> Login / Sign Up
+                    </button>`;
+            }
         }
 
         window.toggleUserDropdown = function() {
@@ -1138,6 +1202,146 @@
         window.handleLogout = function() {
             AppBridge.logout();
         };
+
+        window.openAuthModal = function() {
+            $("orderAuthAlert").style.display = 'none';
+            $("orderAuthModal").classList.add("open");
+        };
+
+        window.closeAuthModal = function() {
+            $("orderAuthModal").classList.remove("open");
+        };
+
+        window.switchOrderAuthTab = function(tab) {
+            const isLogin = tab === 'login';
+            $("tabBtnOrderLogin").classList.toggle("active", isLogin);
+            $("tabBtnOrderRegister").classList.toggle("active", !isLogin);
+            $("tabBtnOrderLogin").style.color = isLogin ? '#0f172a' : 'var(--muted)';
+            $("tabBtnOrderRegister").style.color = !isLogin ? '#0f172a' : 'var(--muted)';
+            $("orderLoginForm").style.display = isLogin ? 'block' : 'none';
+            $("orderRegisterForm").style.display = !isLogin ? 'block' : 'none';
+            $("orderAuthAlert").style.display = 'none';
+        };
+
+        window.fillOrderDemo = function(email, pass) {
+            $("orderLoginEmail").value = email;
+            $("orderLoginPass").value = pass;
+        };
+
+        $("orderLoginForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const email = $("orderLoginEmail").value.trim();
+            const password = $("orderLoginPass").value.trim();
+            const alertBox = $("orderAuthAlert");
+            const btn = $("btnOrderLoginSubmit");
+
+            btn.disabled = true;
+            btn.textContent = "Verifying...";
+
+            try {
+                const res = await AppBridge.loginUser(email, password);
+                if (res.success) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = '#f0fdf4';
+                    alertBox.style.border = '1px solid #bbf7d0';
+                    alertBox.style.color = '#166534';
+                    alertBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Welcome back, <b>${res.user.name}</b>!`;
+                    setTimeout(() => {
+                        closeAuthModal();
+                        initAuthUI();
+                        toast(`Signed in as ${res.user.name}`);
+                    }, 500);
+                    return;
+                }
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.border = '1px solid #fecaca';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${res.message || 'Invalid credentials'}`;
+            } catch (err) {
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.border = '1px solid #fecaca';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Error logging in. Please try again.';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Sign In";
+            }
+        });
+
+        $("orderRegisterForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const name = $("orderRegName").value.trim();
+            const email = $("orderRegEmail").value.trim();
+            const phone = $("orderRegPhone").value.trim();
+            const password = $("orderRegPass").value.trim();
+            const confirmPass = $("orderRegConfirmPass").value.trim();
+            const alertBox = $("orderAuthAlert");
+            const btn = $("btnOrderRegSubmit");
+
+            if (!name || !email) {
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = 'Please enter your name and email.';
+                return;
+            }
+            if (password.length < 6) {
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = 'Password must be at least 6 characters.';
+                return;
+            }
+            if (password !== confirmPass) {
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = 'Passwords do not match.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Creating account...";
+
+            try {
+                const res = await AppBridge.registerUser({
+                    name,
+                    email,
+                    phone: phone || '9876543210',
+                    address: ($("address") && $("address").value.trim()) ? $("address").value.trim() : 'Kolkata Central (Default)',
+                    password
+                });
+
+                if (res.success) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = '#f0fdf4';
+                    alertBox.style.border = '1px solid #bbf7d0';
+                    alertBox.style.color = '#166534';
+                    alertBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Account created! Welcome, <b>${name}</b>!`;
+                    setTimeout(() => {
+                        closeAuthModal();
+                        initAuthUI();
+                        toast(`Account created! Welcome ${name}`);
+                    }, 600);
+                    return;
+                }
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.border = '1px solid #fecaca';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${res.message || 'Registration failed'}`;
+            } catch(err) {
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+                alertBox.innerHTML = 'Error creating account. Please try again.';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Create Account & Sign In";
+            }
+        });
 
         // Filter buttons click handler
         $("filters").addEventListener("click", e => {

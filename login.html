@@ -917,19 +917,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="regPhone">Mobile Phone *</label>
+                        <label class="form-label" for="regPhone">Mobile Phone (Optional)</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-phone input-icon"></i>
-                            <input type="tel" id="regPhone" class="form-input" placeholder="10-digit number" required autocomplete="tel" maxlength="10">
+                            <input type="tel" id="regPhone" class="form-input" placeholder="e.g. 9876543210" autocomplete="tel">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="regAddress">Default Delivery Address *</label>
+                    <label class="form-label" for="regAddress">Default Delivery Address (Optional)</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-location-dot input-icon"></i>
-                        <input type="text" id="regAddress" class="form-input" placeholder="Flat No, Street, Landmark, City" required autocomplete="street-address">
+                        <input type="text" id="regAddress" class="form-input" placeholder="Flat No, Street, Landmark, City" autocomplete="street-address">
                     </div>
                 </div>
 
@@ -1043,6 +1043,7 @@
             const alertMsg = document.getElementById('authAlertMessage');
             const actionWrap = document.getElementById('authAlertActionWrapper');
 
+            alertBox.style.display = 'flex';
             alertBox.className = 'auth-alert ' + type;
             alertMsg.innerHTML = message;
             actionWrap.innerHTML = '';
@@ -1124,7 +1125,7 @@
                     const target = params.get('redirect') || 'index.html';
                     setTimeout(() => {
                         window.location.href = target;
-                    }, 600);
+                    }, 500);
                     return;
                 }
 
@@ -1197,28 +1198,18 @@
                 document.getElementById('regEmail').focus();
                 return;
             }
-            if (!phone || phone.length < 10) {
-                showAlert('error', 'Please enter a valid 10-digit mobile number.');
-                document.getElementById('regPhone').focus();
-                return;
-            }
-            if (!address) {
-                showAlert('error', 'Please enter your delivery address.');
-                document.getElementById('regAddress').focus();
-                return;
-            }
             if (!password || password.length < 6) {
                 showAlert('error', 'Password must be at least 6 characters long.');
                 document.getElementById('regPassword').focus();
                 return;
             }
             if (password !== confirmPass) {
-                showAlert('error', 'Passwords do not match. Please re-enter your confirm password.');
+                showAlert('error', 'Passwords do not match. Please verify your confirm password.');
                 document.getElementById('regConfirmPassword').focus();
                 return;
             }
             if (!agreeTerms) {
-                showAlert('error', 'You must agree to the Terms of Service to register.');
+                showAlert('error', 'Please agree to the Terms of Service to create your account.');
                 return;
             }
 
@@ -1229,16 +1220,18 @@
                 const res = await AppBridge.registerUser({
                     name,
                     email,
-                    phone,
-                    address,
+                    phone: phone || '9876543210',
+                    address: address || 'Kolkata Central (Default)',
                     password
                 });
 
                 if (res.success) {
-                    showAlert('success', `🎉 Account registered successfully! Welcome to JA Restaurant, <b>${name}</b>! Entering website...`);
+                    showAlert('success', `🎉 <b>Account registered successfully!</b> Welcome to JA Restaurant, <b>${name}</b>! Entering website...`);
+                    const params = new URLSearchParams(window.location.search);
+                    const target = params.get('redirect') || 'index.html';
                     setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 900);
+                        window.location.href = target;
+                    }, 700);
                 } else {
                     showAlert('error', res.message || 'Registration failed. An account with this email may already exist.');
                     submitBtn.disabled = false;
