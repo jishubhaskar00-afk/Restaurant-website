@@ -8,8 +8,77 @@ const AppBridge = (() => {
     const STORAGE_KEY_AUTH = 'ja_user_session';
     const STORAGE_KEY_FAVS = 'ja_user_favs';
     const STORAGE_KEY_ORDERS = 'ja_orders_local';
+    const STORAGE_KEY_USERS = 'ja_registered_users';
 
     let isApiConnected = null;
+
+    // Default registered users seed for offline / static mode
+    const DEFAULT_REGISTERED_USERS = [
+        {
+            id: "user_admin",
+            name: "Manager Jishu",
+            email: "admin@jarestaurant.com",
+            phone: "9876543210",
+            address: "JA Central Branch Office, Park Street",
+            role: "admin",
+            passwordHash: "admin123",
+            verified: true,
+            createdAt: "2026-11-13T10:38:24.644Z"
+        },
+        {
+            id: "user_demo",
+            name: "Debika Mondal",
+            email: "debika@example.com",
+            phone: "9876543211",
+            address: "Flat 4B, Green Park Enclave, Kolkata",
+            role: "customer",
+            passwordHash: "demo123",
+            verified: true,
+            createdAt: "2026-11-13T10:38:24.644Z"
+        },
+        {
+            id: "user_jishu",
+            name: "Jishu Bhaskar",
+            email: "jishubhaskar328@gmail.com",
+            phone: "9907044676",
+            address: "Jangipur, Murshidabad, 742213",
+            role: "customer",
+            passwordHash: "jishu@060924",
+            verified: true,
+            createdAt: "2026-11-13T10:38:24.644Z"
+        }
+    ];
+
+    // Initialize registered users in local storage if not present
+    function getRegisteredUsers() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY_USERS);
+            if (!raw) {
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(DEFAULT_REGISTERED_USERS));
+                return DEFAULT_REGISTERED_USERS;
+            }
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed) || parsed.length === 0) {
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(DEFAULT_REGISTERED_USERS));
+                return DEFAULT_REGISTERED_USERS;
+            }
+            return parsed;
+        } catch (e) {
+            return DEFAULT_REGISTERED_USERS;
+        }
+    }
+
+    function saveRegisteredUser(user) {
+        const users = getRegisteredUsers();
+        const existingIdx = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (existingIdx >= 0) {
+            users[existingIdx] = { ...users[existingIdx], ...user };
+        } else {
+            users.push(user);
+        }
+        localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+        return user;
+    }
 
     // Check backend connectivity
     async function checkBackend() {
@@ -116,6 +185,158 @@ const AppBridge = (() => {
         window.dispatchEvent(new CustomEvent('ja_auth_changed', { detail: { user } }));
     }
 
+    // High level login method: checks backend API, falls back to local registered users
+    async function loginUser(email, password) {
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanPass = (password || '').trim();
+
+        if (!cleanEmail) {
+            return { success: false, message: "Please enter your email address." };
+        }
+        if (!cleanPass) {
+            return { success: false, message: "Please enter your password." };
+        }
+
+        // Try backend API first
+        if (window.location.protocol.startsWith('http')) {
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: cleanEmail, password: cleanPass })
+                });
+                const data = await res.json();
+                if (data.success && data.user) {
+                    setCurrentUser(data.user);
+                    // Also mirror into local store
+                    saveRegisteredUser({ ...data.user, passwordHash: cleanPass });
+                    return { success: true, message: data.message || "Login successful!", user: data.user };
+                }
+                return {
+                    success: false,
+                    notRegistered: !!data.notRegistered,
+                    message: data.message || "Invalid credentials."
+                };
+            } catch (err) {
+                // If network/server unreachable, proceed to local check
+            }
+        }
+
+        // Local check for offline/file:// mode
+        const localUsers = getRegisteredUsers();
+        const found = localUsers.find(u => u.email.toLowerCase() === cleanEmail);
+        if (!found) {
+            return {
+                success: false,
+                notRegistered: true,
+                message: "No account found with this email. You are not registered yet. Please click Create Account below to register before accessing the website."
+            };
+        }
+
+        if (found.passwordHash !== cleanPass) {
+            return {
+                success: false,
+                message: "Incorrect password. Please verify your password and try again."
+            };
+        }
+
+        const safeUser = {
+            id: found.id,
+            name: found.name,
+            email: found.email,
+            phone: found.phone || '',
+            address: found.address || '',
+            role: found.role || 'customer'
+        };
+        setCurrentUser(safeUser);
+        return { success: true, message: "Login successful!", user: safeUser };
+    }
+
+    // High level register method
+    async function registerUser(userData) {
+        const { name, email, phone, address, password } = userData;
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanPass = (password || '').trim();
+
+        if (!cleanEmail || !cleanPass) {
+            return { success: false, message: "Email and password are required." };
+        }
+
+        // Try backend API
+        if (window.location.protocol.startsWith('http')) {
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name.trim(),
+                        email: cleanEmail,
+                        phone: (phone || '').trim(),
+                        address: (address || '').trim(),
+                        password: cleanPass
+                    })
+                });
+                const data = await res.json();
+                if (data.success && data.user) {
+                    setCurrentUser(data.user);
+                    saveRegisteredUser({ ...data.user, passwordHash: cleanPass });
+                    return { success: true, message: data.message || "Registration successful!", user: data.user };
+                }
+                return { success: false, message: data.message || "Registration failed." };
+            } catch (err) {
+                // Fallback to local
+            }
+        }
+
+        // Local registration fallback
+        const localUsers = getRegisteredUsers();
+        const exists = localUsers.some(u => u.email.toLowerCase() === cleanEmail);
+        if (exists) {
+            return { success: false, message: "An account with this email already exists. Please log in." };
+        }
+
+        const newUser = {
+            id: 'user_' + Date.now(),
+            name: name ? name.trim() : cleanEmail.split('@')[0],
+            email: cleanEmail,
+            phone: (phone || '').trim(),
+            address: (address || '').trim(),
+            role: 'customer',
+            passwordHash: cleanPass,
+            verified: true,
+            createdAt: new Date().toISOString()
+        };
+
+        saveRegisteredUser(newUser);
+        const safeUser = {
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            phone: newUser.phone,
+            address: newUser.address,
+            role: newUser.role
+        };
+        setCurrentUser(safeUser);
+        return { success: true, message: "Account created successfully! Welcome to JA Restaurant.", user: safeUser };
+    }
+
+    // Require authentication gate: redirects unauthenticated visitors to login.html
+    function requireAuth() {
+        const user = getCurrentUser();
+        if (!user) {
+            const current = encodeURIComponent(window.location.pathname.split('/').pop() || 'index.html');
+            window.location.replace(`login.html?redirect=${current}`);
+            return false;
+        }
+        return true;
+    }
+
+    // Logout helper
+    function logout() {
+        setCurrentUser(null);
+        window.location.href = "login.html?action=logout";
+    }
+
     // Favorites
     function getFavorites() {
         try {
@@ -158,6 +379,9 @@ const AppBridge = (() => {
         return order;
     }
 
+    // Seed local registered users on script load
+    getRegisteredUsers();
+
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
@@ -172,6 +396,11 @@ const AppBridge = (() => {
         isApiConnected: () => isApiConnected,
         getCurrentUser,
         setCurrentUser,
+        getRegisteredUsers,
+        loginUser,
+        registerUser,
+        requireAuth,
+        logout,
         getFavorites,
         toggleFavorite,
         isFavorite,
