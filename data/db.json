@@ -695,10 +695,113 @@
       "socialProvider": null,
       "verified": true,
       "createdAt": "2026-11-13T11:08:28.068Z"
+    },
+    {
+      "id": "user_1794821928886",
+      "name": "New Test Customer",
+      "email": "testuser_1794821928865@example.com",
+      "phone": "9876500000",
+      "address": "42 Park Street, Kolkata",
+      "role": "customer",
+      "passwordHash": "securePassword123",
+      "socialProvider": null,
+      "verified": true,
+      "createdAt": "2026-11-16T09:38:48.886Z"
+    },
+    {
+      "id": "user_1794822010217",
+      "name": "New Test Customer",
+      "email": "testuser_1794822010204@example.com",
+      "phone": "9876500000",
+      "address": "42 Park Street, Kolkata",
+      "role": "customer",
+      "passwordHash": "securePassword123",
+      "socialProvider": null,
+      "verified": true,
+      "createdAt": "2026-11-16T09:40:10.217Z"
     }
   ],
   "orders": [
-    
+    {
+      "id": "ORD-6175",
+      "userId": "guest",
+      "customerName": "Test User",
+      "phone": "9876543210",
+      "email": "test@example.com",
+      "address": "123 Test Street, Kolkata",
+      "orderType": "delivery",
+      "timeSlot": "ASAP (25-35 min)",
+      "instructions": "",
+      "paymentMethod": "UPI",
+      "paymentStatus": "Paid Online (Verified)",
+      "items": [
+        {
+          "id": 1,
+          "name": "Burger",
+          "unitPrice": 85,
+          "qty": 1,
+          "size": "Standard",
+          "spice": "Regular",
+          "addons": [],
+          "total": 85
+        }
+      ],
+      "subtotal": 85,
+      "discount": 0,
+      "coupon": "",
+      "tax": 4.25,
+      "deliveryFee": 30,
+      "grandTotal": 119.25,
+      "status": "Confirmed",
+      "deliveryPartner": {
+        "name": "Vikram Das",
+        "phone": "+91 98777 88990",
+        "vehicle": "TVS Jupiter (WB-04-CX-8832)",
+        "rating": 4.95
+      },
+      "createdAt": "2026-11-16T09:40:10.132Z",
+      "estimatedDelivery": "30-40 min"
+    },
+    {
+      "id": "ORD-9525",
+      "userId": "guest",
+      "customerName": "Test User",
+      "phone": "9876543210",
+      "email": "test@example.com",
+      "address": "123 Test Street, Kolkata",
+      "orderType": "delivery",
+      "timeSlot": "ASAP (25-35 min)",
+      "instructions": "",
+      "paymentMethod": "UPI",
+      "paymentStatus": "Paid Online (Verified)",
+      "items": [
+        {
+          "id": 1,
+          "name": "Burger",
+          "unitPrice": 85,
+          "qty": 1,
+          "size": "Standard",
+          "spice": "Regular",
+          "addons": [],
+          "total": 85
+        }
+      ],
+      "subtotal": 85,
+      "discount": 0,
+      "coupon": "",
+      "tax": 4.25,
+      "deliveryFee": 30,
+      "grandTotal": 119.25,
+      "status": "Confirmed",
+      "deliveryPartner": {
+        "name": "Rahul Sharma",
+        "phone": "+91 98111 22334",
+        "vehicle": "Honda Activa (WB-02-AK-4190)",
+        "rating": 4.9
+      },
+      "createdAt": "2026-11-16T09:38:48.778Z",
+      "estimatedDelivery": "30-40 min"
+    }
   ],
   "coupons": [
     {
