@@ -116,3 +116,67 @@ test('GET /api/admin/analytics should return operational metrics', async () => {
     assert.ok(typeof data.analytics.totalOrders === 'number');
     assert.ok(typeof data.analytics.totalRevenue === 'number');
 });
+
+test('GET / should serve login.html as the first entry page', async () => {
+    const res = await fetch(`${BASE_URL}/`);
+    assert.strictEqual(res.status, 200);
+    const text = await res.text();
+    assert.ok(text.includes('Sign In') || text.includes('Create Account') || text.includes('JA Restaurant'));
+    assert.ok(text.includes('signInForm'));
+});
+
+test('POST /api/auth/login should reject unregistered user with 404', async () => {
+    const res = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'unregistered_random_user_99@test.com', password: 'password123' })
+    });
+    assert.strictEqual(res.status, 404);
+    const data = await res.json();
+    assert.strictEqual(data.success, false);
+    assert.strictEqual(data.notRegistered, true);
+    assert.ok(data.message.includes('not registered'));
+});
+
+test('POST /api/auth/login should reject registered user with wrong password with 401', async () => {
+    const res = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'debika@example.com', password: 'wrongpassword' })
+    });
+    assert.strictEqual(res.status, 401);
+    const data = await res.json();
+    assert.strictEqual(data.success, false);
+    assert.ok(data.message.includes('Incorrect password'));
+});
+
+test('POST /api/auth/register should create a new account successfully', async () => {
+    const uniqueEmail = `testuser_${Date.now()}@example.com`;
+    const res = await fetch(`${BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: 'New Test Customer',
+            email: uniqueEmail,
+            phone: '9876500000',
+            address: '42 Park Street, Kolkata',
+            password: 'securePassword123'
+        })
+    });
+    assert.strictEqual(res.status, 201);
+    const data = await res.json();
+    assert.strictEqual(data.success, true);
+    assert.ok(data.user);
+    assert.strictEqual(data.user.email, uniqueEmail);
+
+    // Verify user can now log in
+    const loginRes = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: uniqueEmail, password: 'securePassword123' })
+    });
+    assert.strictEqual(loginRes.status, 200);
+    const loginData = await loginRes.json();
+    assert.strictEqual(loginData.success, true);
+    assert.strictEqual(loginData.user.email, uniqueEmail);
+});
