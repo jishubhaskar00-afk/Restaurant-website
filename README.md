@@ -122,8 +122,9 @@ npm start
 The server will start on `http://localhost:3000`.
 
 ### 3. Open in Browser
-- **Homepage & Outlets:** [http://localhost:3000/index.html](http://localhost:3000/index.html)
-- **Order Online & Customization:** [http://localhost:3000/order.html](http://localhost:3000/order.html)
+- **Login & Registration Gateway (First Page):** [http://localhost:3000/](http://localhost:3000/) or [http://localhost:3000/login.html](http://localhost:3000/login.html)
+- **Homepage & Outlets:** [http://localhost:3000/index.html](http://localhost:3000/index.html) *(Requires registered account)*
+- **Order Online & Customization:** [http://localhost:3000/order.html](http://localhost:3000/order.html) *(Seamless ordering without login prompts on page)*
 - **Restaurant Manager Dashboard:** [http://localhost:3000/dashboard.html](http://localhost:3000/dashboard.html)
 
 ### 4. Run Automated Tests
@@ -135,12 +136,11 @@ All test suites will execute and validate the core APIs.
 ---
 
 ## 🔑 Demo Credentials
+- **Customer Accounts:**
+  - Email: `debika@example.com` | Password: `demo123`
+  - Email: `jishubhaskar328@gmail.com` | Password: `jishu@060924`
 - **Manager / Admin Account:**
-  - Email: `admin@jarestaurant.com`
-  - Password: `admin123`
-- **Customer Demo Account:**
-  - Email: `debika@example.com`
-  - Password: `demo123`
+  - Email: `admin@jarestaurant.com` | Password: `admin123`
 
 ---
 
