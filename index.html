@@ -9,6 +9,14 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#fac031">
     <link rel="stylesheet" href="style.css">
+    <script src="app_bridge.js"></script>
+    <script>
+        // Enforce authentication gate: visitor cannot access website without registering & signing in
+        if (!AppBridge.getCurrentUser()) {
+            window.location.replace("login.html?redirect=index.html");
+        }
+    </script>
+</head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
         integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -35,7 +43,9 @@
             <div class="icon">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <i class="fa-solid fa-heart"></i>
-                <i class="fa-solid fa-cart-shopping"></i>
+                <a href="order.html" style="color:inherit;"><i class="fa-solid fa-cart-shopping"></i></a>
+            </div>
+            <div id="indexUserNav" style="display:flex; align-items:center; gap:8px;">
             </div>
 
         </nav>
@@ -1113,6 +1123,22 @@
         document.getElementById('homeOutletSearch')?.addEventListener('input', renderHomeOutlets);
         document.getElementById('homeCuisineFilter')?.addEventListener('change', renderHomeOutlets);
 
+        function renderUserSession() {
+            const user = AppBridge.getCurrentUser();
+            const nav = document.getElementById('indexUserNav');
+            if (!nav) return;
+            if (user) {
+                nav.innerHTML = `
+                    <span style="font-size:13px; font-weight:700; color:#1e293b; background:#f1f5f9; padding:6px 12px; border-radius:20px; border:1px solid #e2e8f0; display:inline-flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-circle-user" style="color:#b45309;"></i> ${user.name ? user.name.split(' ')[0] : 'User'}
+                    </span>
+                    <button onclick="AppBridge.logout()" style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Log Out">
+                        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                    </button>`;
+            }
+        }
+
+        renderUserSession();
         loadHomeOutlets();
     </script>
 </body>
