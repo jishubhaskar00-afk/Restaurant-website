@@ -31,9 +31,9 @@ function assignDeliveryPartner() {
    1. USER REGISTRATION AND AUTHENTICATION APIS
    ========================================================= */
 
-// Register new user
+// Register new user (supports direct registration and simulated OTP verification)
 app.post('/api/auth/register', (req, res) => {
-    const { name, email, phone, address, password, socialProvider } = req.body;
+    const { name, email, phone, address, password, socialProvider, requireOtp } = req.body;
     if (!email || (!password && !socialProvider)) {
         return res.status(400).json({ success: false, message: "Email and password are required." });
     }
@@ -44,7 +44,40 @@ app.post('/api/auth/register', (req, res) => {
         return res.status(409).json({ success: false, message: "An account with this email already exists. Please log in." });
     }
 
-    // Generate simulated 6-digit OTP for 2-factor / email verification
+    // Direct registration (like standard websites)
+    if (!requireOtp) {
+        const newUser = {
+            id: 'user_' + Date.now(),
+            name: name || email.split('@')[0],
+            email: email.toLowerCase(),
+            phone: phone || '',
+            address: address || '',
+            role: 'customer',
+            passwordHash: password || 'social_auth',
+            socialProvider: socialProvider || null,
+            verified: true,
+            createdAt: new Date().toISOString()
+        };
+        db.users.push(newUser);
+        saveDb(db);
+
+        const token = 'token_' + Buffer.from(newUser.email + ':' + Date.now()).toString('base64');
+        return res.status(201).json({
+            success: true,
+            message: "Account registered successfully! Welcome to JA Restaurant.",
+            token,
+            user: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                phone: newUser.phone,
+                address: newUser.address,
+                role: newUser.role
+            }
+        });
+    }
+
+    // Optional 2-factor / email verification
     const simulatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
     otpCache.set(email.toLowerCase(), {
         otp: simulatedOtp,
@@ -69,7 +102,7 @@ app.post('/api/auth/register', (req, res) => {
         success: true,
         message: "Registration initiated! Please enter the 6-digit verification code.",
         requiresVerification: true,
-        demoOtp: simulatedOtp // provided for demo ease of evaluation
+        demoOtp: simulatedOtp
     });
 });
 
@@ -161,8 +194,19 @@ app.post('/api/auth/login', (req, res) => {
         });
     }
 
-    if (!user || user.passwordHash !== password) {
-        return res.status(401).json({ success: false, message: "Invalid email or password." });
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            notRegistered: true,
+            message: "No account found with this email. You are not registered yet. Please register first to access the website."
+        });
+    }
+
+    if (user.passwordHash !== password) {
+        return res.status(401).json({
+            success: false,
+            message: "Incorrect password. Please verify your password and try again."
+        });
     }
 
     const token = 'token_' + Buffer.from(user.email + ':' + Date.now()).toString('base64');
@@ -630,9 +674,13 @@ app.get('/sw.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'sw.js'));
 });
 
-// Fallback to index.html for root
+// The login page is served first as the authentication gate
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 // Start the server if run directly
@@ -640,9 +688,11 @@ if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`====================================================`);
         console.log(`🍽️  JA Restaurant Food Ordering System Server running`);
-        console.log(`👉  URL: http://localhost:${PORT}`);
-        console.log(`📋  Restaurant Dashboard: http://localhost:${PORT}/dashboard.html`);
+        console.log(`👉  URL (Login First): http://localhost:${PORT}`);
+        console.log(`🔑  Login Page: http://localhost:${PORT}/login.html`);
+        console.log(`🏠  Home Page: http://localhost:${PORT}/index.html`);
         console.log(`🛒  Ordering Page: http://localhost:${PORT}/order.html`);
+        console.log(`📋  Restaurant Dashboard: http://localhost:${PORT}/dashboard.html`);
         console.log(`====================================================`);
     });
 }
