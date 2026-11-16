@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In & Register | JA Restaurant Online Food Ordering</title>
+    <meta name="description" content="Sign in or register to order fresh, delicious meals from JA Restaurant. Exclusive member menu access, real-time tracking, and express delivery.">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fac031">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+        :root {
+            --brand: #fac031;
+            --brand-dark: #b45309;
+            --brand-hover: #eab308;
+            --accent: #ff5722;
+            --accent-dark: #c2410c;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --bg-page: #f8fafc;
+            --card: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Academic Demo Banner */
+        .academic-badge {
+            background: #fffbeb;
+            color: #92400e;
+            padding: 7px 16px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #fde68a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Top Header */
+        .auth-topbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--line);
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .auth-logo img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .auth-logo span {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #1e293b;
+        }
+
+        .auth-logo span span {
+            color: var(--brand-dark);
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #047857;
+            background: #ecfdf5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Main Split Layout */
+        .auth-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            max-width: 1240px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px 48px;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (max-width: 960px) {
+            .auth-layout {
+                grid-template-columns: 1fr;
+                padding: 20px 16px 40px;
+            }
+            .auth-hero-panel {
+                display: none;
+            }
+        }
+
+        /* Left Hero Panel */
+        .auth-hero-panel {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: var(--radius-lg);
+            padding: 48px 40px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 640px;
+            box-shadow: var(--shadow-elevated);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-hero-panel::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(250, 192, 49, 0.25) 0%, rgba(250, 192, 49, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .auth-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(250, 192, 49, 0.15);
+            color: var(--brand);
+            border: 1px solid rgba(250, 192, 49, 0.35);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            width: fit-content;
+            margin-bottom: 24px;
+        }
+
+        .auth-hero-headline {
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-hero-headline span {
+            color: var(--brand);
+        }
+
+        .auth-hero-desc {
+            font-size: 15px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .auth-features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .feature-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .feature-content p {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        .auth-social-proof {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .proof-stars {
+            color: #fbbf24;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .proof-text {
+            font-size: 12px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        /* Right Auth Card */
+        .auth-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-elevated);
+            padding: 40px;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .auth-card {
+                padding: 24px 18px;
+            }
+        }
+
+        .auth-card-header {
+            margin-bottom: 24px;
+        }
+
+        .auth-card-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-card-subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        /* Segmented Tabs */
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            gap: 4px;
+        }
+
+        .auth-tab-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .auth-tab-btn:hover {
+            color: #1e293b;
+        }
+
+        .auth-tab-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Alerts and Notice Banners */
+        .auth-alert {
+            display: none;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-alert.error {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--danger-bg);
+            color: #991b1b;
+            border: 1px solid var(--danger-border);
+        }
+
+        .auth-alert.success {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .auth-alert.info {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .auth-alert i {
+            font-size: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .auth-alert-body {
+            flex: 1;
+        }
+
+        .auth-alert-action {
+            display: inline-block;
+            margin-top: 6px;
+            font-weight: 700;
+            color: #b91c1c;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94a3b8;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px 11px 40px;
+            font-size: 14px;
+            border: 1.5px solid var(--line);
+            border-radius: var(--radius-sm);
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(250, 192, 49, 0.2);
+        }
+
+        .form-input.has-eye {
+            padding-right: 42px;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password-btn:hover {
+            color: #475569;
+        }
+
+        /* Form Row (Grid) */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 520px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        /* Helpers row (Remember me & Forgot pass) */
+        .auth-extra-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-label input {
+            accent-color: var(--brand-dark);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--brand-dark);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .auth-submit-btn {
+            width: 100%;
+            padding: 13px 20px;
+            background: var(--brand);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(250, 192, 49, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .auth-submit-btn:hover {
+            background: var(--brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(250, 192, 49, 0.5);
+        }
+
+        .auth-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .auth-submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Quick Demo Accounts Bar */
+        .demo-accounts-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--line);
+        }
+
+        .demo-accounts-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demo-pills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .demo-pill {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-pill:hover {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        /* Footer switch notice */
+        .auth-footer-prompt {
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 20px;
+        }
+
+        .auth-footer-prompt a {
+            color: var(--brand-dark);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .auth-footer-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        /* Password Strength Bar */
+        .strength-meter {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Simple Modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--shadow-elevated);
+            animation: modalPop 0.2s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .modal-box p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .btn-modal-cancel {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #475569;
+        }
+
+        .btn-modal-submit {
+            background: var(--brand);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #000;
+        }
+
+        /* Footer */
+        .auth-page-footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid var(--line);
+            background: #ffffff;
+        }
+    </style>
+
+    <script src="app_bridge.js"></script>
+    <script>
+        // Check query params for logout action or pre-existing session
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isLogout = urlParams.get('action') === 'logout';
+            if (isLogout) {
+                AppBridge.setCurrentUser(null);
+            } else {
+                // If user is already registered and logged in, forward to index.html
+                const current = AppBridge.getCurrentUser();
+                if (current) {
+                    const redirect = urlParams.get('redirect') || 'index.html';
+                    window.location.replace(redirect);
+                }
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- Academic Badge Header -->
+    <div class="academic-badge">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>JA Restaurant Online Food Ordering & Management System — Academic Demonstration Project (AICTE Approved).</span>
+    </div>
+
+    <!-- Top Branding Bar -->
+    <header class="auth-topbar">
+        <a href="login.html" class="auth-logo">
+            <img src="images/logo1.png" alt="JA Restaurant Logo" onerror="this.style.display='none'">
+            <span>JA <span>Restaurant</span></span>
+        </a>
+        <div class="security-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Verified Secure Access</span>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="auth-layout">
+        <!-- Left Hero Presentation Panel -->
+        <section class="auth-hero-panel">
+            <div>
+                <div class="auth-hero-badge">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>Authentic Flavors • Express Delivery</span>
+                </div>
+                <h1 class="auth-hero-headline">
+                    Fresh Food,<br>Made <span>With Love</span>.
+                </h1>
+                <p class="auth-hero-desc">
+                    Experience chef-crafted multi-cuisine dishes, hot woodfired pizzas, and aromatic biryanis. Sign in or register below to explore our live menu, place orders, and track your delivery in real-time.
+                </p>
+
+                <div class="auth-features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Registered Members Only</h4>
+                            <p>Register once to unlock direct online ordering, special chef discounts, and saved addresses.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Express Hot Delivery</h4>
+                            <p>Track your food live from kitchen prep to your doorstep in 25–35 minutes.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Seamless Checkout</h4>
+                            <p>Pay via UPI, Cards, Net Banking, or Cash on Delivery with full safety.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-social-proof">
+                <div>
+                    <div class="proof-stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                        <b style="color:#ffffff; margin-left:4px;">4.9 / 5</b>
+                    </div>
+                    <div class="proof-text">Loved by 1,000+ hungry foodies in Kolkata</div>
+                </div>
+                <i class="fa-solid fa-award" style="font-size:28px; color:var(--brand);"></i>
+            </div>
+        </section>
+
+        <!-- Right Auth Card -->
+        <section class="auth-card">
+            <div class="auth-card-header">
+                <h2 class="auth-card-title" id="cardHeaderTitle">Welcome Back</h2>
+                <p class="auth-card-subtitle" id="cardHeaderSubtitle">Sign in to your registered account to access the website.</p>
+            </div>
+
+            <!-- Segmented Tabs for Switch between Login and Register -->
+            <div class="auth-tabs" role="tablist">
+                <button type="button" class="auth-tab-btn active" id="tabBtnSignIn" onclick="switchAuthMode('login')">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+                </button>
+                <button type="button" class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthMode('register')">
+                    <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
+            </div>
+
+            <!-- Dynamic Feedback Alert -->
+            <div class="auth-alert" id="authAlertBox">
+                <i class="fa-solid fa-circle-exclamation" id="authAlertIcon"></i>
+                <div class="auth-alert-body">
+                    <span id="authAlertMessage">Message text here</span>
+                    <div id="authAlertActionWrapper"></div>
+                </div>
+            </div>
+
+            <!-- SIGN IN FORM -->
+            <form id="signInForm" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="e.g. debika@example.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="loginPassword" class="form-input has-eye" placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('loginPassword', this)" aria-label="Toggle password view">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-extra-row">
+                    <label class="remember-label">
+                        <input type="checkbox" id="rememberMeCheckbox" checked>
+                        <span>Remember me</span>
+                    </label>
+                    <a class="forgot-link" onclick="openForgotModal()">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="auth-submit-btn" id="btnSubmitSignIn">
+                    <span>Sign In to Website</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <!-- Quick Demo Accounts -->
+                <div class="demo-accounts-section">
+                    <div class="demo-accounts-title">
+                        <span><i class="fa-solid fa-bolt"></i> Quick Demo Accounts</span>
+                        <span style="font-size:11px; font-weight:normal; text-transform:none;">Click to fill</span>
+                    </div>
+                    <div class="demo-pills-row">
+                        <button type="button" class="demo-pill" onclick="quickFill('debika@example.com', 'demo123')">
+                            <i class="fa-solid fa-user"></i> Debika (Customer)
+                        </button>
+                        <button type="button" class="demo-pill" onclick="quickFill('jishubhaskar328@gmail.com', 'jishu@060924')">
+                            <i class="fa-solid fa-user-check"></i> Jishu (Customer)
+                        </button>
+                        <button type="button" class="demo-pill" onclick="quickFill('admin@jarestaurant.com', 'admin123')">
+                            <i class="fa-solid fa-user-shield"></i> Manager (Admin)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-footer-prompt">
+                    Don't have an account yet? <a onclick="switchAuthMode('register')">Create an account</a>
+                </div>
+            </form>
+
+            <!-- REGISTER / SIGN UP FORM -->
+            <form id="registerForm" style="display:none;" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="regName">Full Name *</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="regName" class="form-input" placeholder="e.g. Rahul Sen" required autocomplete="name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="regEmail">Email Address *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="email" id="regEmail" class="form-input" placeholder="name@example.com" required autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regPhone">Mobile Phone *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-phone input-icon"></i>
+                            <input type="tel" id="regPhone" class="form-input" placeholder="10-digit number" required autocomplete="tel" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="regAddress">Default Delivery Address *</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-location-dot input-icon"></i>
+                        <input type="text" id="regAddress" class="form-input" placeholder="Flat No, Street, Landmark, City" required autocomplete="street-address">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="regPassword">Password *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="regPassword" class="form-input has-eye" placeholder="Min. 6 chars" required autocomplete="new-password">
+                            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('regPassword', this)" aria-label="Toggle password view">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="strength-meter" id="strengthMeter">
+                            <div class="strength-bar" id="strengthBar"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regConfirmPassword">Confirm Password *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-shield-halved input-icon"></i>
+                            <input type="password" id="regConfirmPassword" class="form-input has-eye" placeholder="Re-enter password" required autocomplete="new-password">
+                            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('regConfirmPassword', this)" aria-label="Toggle password view">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top:-6px; margin-bottom:18px;">
+                    <label class="remember-label" style="font-size:12px;">
+                        <input type="checkbox" id="agreeTerms" checked required>
+                        <span>I agree to the JA Restaurant <a href="#" style="color:var(--brand-dark); text-decoration:none;">Terms of Service</a> & <a href="#" style="color:var(--brand-dark); text-decoration:none;">Privacy Policy</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-submit-btn" id="btnSubmitRegister">
+                    <span>Create Account & Enter Website</span>
+                    <i class="fa-solid fa-user-check"></i>
+                </button>
+
+                <div class="auth-footer-prompt">
+                    Already registered? <a onclick="switchAuthMode('login')">Sign in here</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-backdrop" id="forgotModal">
+        <div class="modal-box">
+            <h3><i class="fa-solid fa-key" style="color:var(--brand-dark); margin-right:8px;"></i> Reset Password</h3>
+            <p>Enter your registered email address. We'll verify your registration and provide password recovery details.</p>
+            <div class="form-group">
+                <label class="form-label">Registered Email</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope input-icon"></i>
+                    <input type="email" id="forgotEmailInput" class="form-input" placeholder="e.g. debika@example.com">
+                </div>
+            </div>
+            <div id="forgotResultArea" style="font-size:13px; margin-bottom:12px; display:none;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" onclick="closeForgotModal()">Cancel</button>
+                <button type="button" class="btn-modal-submit" onclick="handleForgotSubmit()">Find Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Footer -->
+    <footer class="auth-page-footer">
+        <div>© 2026 JA Restaurant Online Food Ordering & Management System. All rights reserved.</div>
+        <div style="margin-top:4px;">Designed by JISHU BHASKAR • AICTE Approved ARDENT Internship Project</div>
+    </footer>
+
+    <!-- Authentication JavaScript -->
+    <script>
+        // Check if redirected due to logout
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('action') === 'logout') {
+                showAlert("success", "You have been logged out successfully. Sign in again to access the website.");
+            } else if (params.get('redirect')) {
+                showAlert("info", "Please sign in or register to access the requested page.");
+            }
+        });
+
+        // Tab Switching between Login and Register
+        function switchAuthMode(mode) {
+            const isLogin = mode === 'login';
+            document.getElementById('tabBtnSignIn').classList.toggle('active', isLogin);
+            document.getElementById('tabBtnRegister').classList.toggle('active', !isLogin);
+            document.getElementById('signInForm').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+
+            const title = document.getElementById('cardHeaderTitle');
+            const sub = document.getElementById('cardHeaderSubtitle');
+            if (isLogin) {
+                title.textContent = "Welcome Back";
+                sub.textContent = "Sign in to your registered account to access the website.";
+            } else {
+                title.textContent = "Create an Account";
+                sub.textContent = "Register today to unlock full menu ordering, discounts, and real-time tracking.";
+            }
+            hideAlert();
+        }
+
+        // Show Alert Helper
+        function showAlert(type, message, actionText, actionCallback) {
+            const alertBox = document.getElementById('authAlertBox');
+            const alertIcon = document.getElementById('authAlertIcon');
+            const alertMsg = document.getElementById('authAlertMessage');
+            const actionWrap = document.getElementById('authAlertActionWrapper');
+
+            alertBox.className = 'auth-alert ' + type;
+            alertMsg.innerHTML = message;
+            actionWrap.innerHTML = '';
+
+            if (type === 'error') {
+                alertIcon.className = 'fa-solid fa-triangle-exclamation';
+            } else if (type === 'success') {
+                alertIcon.className = 'fa-solid fa-circle-check';
+            } else {
+                alertIcon.className = 'fa-solid fa-circle-info';
+            }
+
+            if (actionText && typeof actionCallback === 'function') {
+                const btn = document.createElement('span');
+                btn.className = 'auth-alert-action';
+                btn.textContent = actionText;
+                btn.onclick = actionCallback;
+                actionWrap.appendChild(btn);
+            }
+        }
+
+        function hideAlert() {
+            const alertBox = document.getElementById('authAlertBox');
+            alertBox.className = 'auth-alert';
+            alertBox.style.display = 'none';
+        }
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+
+        // Quick demo credential autofill
+        function quickFill(email, password) {
+            switchAuthMode('login');
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginPassword').value = password;
+            hideAlert();
+            showAlert('info', `Credentials for <b>${email}</b> auto-filled. Click 'Sign In to Website' to enter.`);
+        }
+
+        // Sign In Form Submission
+        document.getElementById('signInForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const submitBtn = document.getElementById('btnSubmitSignIn');
+
+            if (!email) {
+                showAlert('error', 'Please enter your registered email address.');
+                document.getElementById('loginEmail').focus();
+                return;
+            }
+            if (!password) {
+                showAlert('error', 'Please enter your password.');
+                document.getElementById('loginPassword').focus();
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying credentials...';
+
+            try {
+                const result = await AppBridge.loginUser(email, password);
+                if (result.success) {
+                    showAlert('success', `Welcome back, <b>${result.user.name || 'Food Lover'}</b>! Entering website...`);
+                    const params = new URLSearchParams(window.location.search);
+                    const target = params.get('redirect') || 'index.html';
+                    setTimeout(() => {
+                        window.location.href = target;
+                    }, 600);
+                    return;
+                }
+
+                // If user is not registered
+                if (result.notRegistered) {
+                    showAlert(
+                        'error',
+                        `<b>Account Not Found:</b> No registered account exists for <b>${email}</b>.<br>You must create an account first to access the restaurant website.`,
+                        '👉 Click here to register now',
+                        () => {
+                            switchAuthMode('register');
+                            document.getElementById('regEmail').value = email;
+                            document.getElementById('regName').focus();
+                        }
+                    );
+                } else {
+                    showAlert('error', result.message || 'Invalid credentials. Please verify your email and password.');
+                }
+            } catch (err) {
+                showAlert('error', 'An unexpected error occurred. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Sign In to Website</span> <i class="fa-solid fa-arrow-right"></i>';
+            }
+        });
+
+        // Register Form Password Strength Meter
+        document.getElementById('regPassword').addEventListener('input', (e) => {
+            const val = e.target.value;
+            const meter = document.getElementById('strengthMeter');
+            const bar = document.getElementById('strengthBar');
+            if (!val) {
+                meter.style.display = 'none';
+                return;
+            }
+            meter.style.display = 'block';
+            let strength = 0;
+            if (val.length >= 6) strength += 30;
+            if (val.length >= 8) strength += 20;
+            if (/[0-9]/.test(val)) strength += 25;
+            if (/[^A-Za-z0-9]/.test(val)) strength += 25;
+
+            bar.style.width = strength + '%';
+            if (strength <= 30) bar.style.backgroundColor = '#ef4444';
+            else if (strength <= 70) bar.style.backgroundColor = '#f59e0b';
+            else bar.style.backgroundColor = '#10b981';
+        });
+
+        // Register Form Submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirmPass = document.getElementById('regConfirmPassword').value.trim();
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const submitBtn = document.getElementById('btnSubmitRegister');
+
+            if (!name) {
+                showAlert('error', 'Please enter your full name.');
+                document.getElementById('regName').focus();
+                return;
+            }
+            if (!email || !email.includes('@')) {
+                showAlert('error', 'Please enter a valid email address.');
+                document.getElementById('regEmail').focus();
+                return;
+            }
+            if (!phone || phone.length < 10) {
+                showAlert('error', 'Please enter a valid 10-digit mobile number.');
+                document.getElementById('regPhone').focus();
+                return;
+            }
+            if (!address) {
+                showAlert('error', 'Please enter your delivery address.');
+                document.getElementById('regAddress').focus();
+                return;
+            }
+            if (!password || password.length < 6) {
+                showAlert('error', 'Password must be at least 6 characters long.');
+                document.getElementById('regPassword').focus();
+                return;
+            }
+            if (password !== confirmPass) {
+                showAlert('error', 'Passwords do not match. Please re-enter your confirm password.');
+                document.getElementById('regConfirmPassword').focus();
+                return;
+            }
+            if (!agreeTerms) {
+                showAlert('error', 'You must agree to the Terms of Service to register.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating your account...';
+
+            try {
+                const res = await AppBridge.registerUser({
+                    name,
+                    email,
+                    phone,
+                    address,
+                    password
+                });
+
+                if (res.success) {
+                    showAlert('success', `🎉 Account registered successfully! Welcome to JA Restaurant, <b>${name}</b>! Entering website...`);
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 900);
+                } else {
+                    showAlert('error', res.message || 'Registration failed. An account with this email may already exist.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Create Account & Enter Website</span> <i class="fa-solid fa-user-check"></i>';
+                }
+            } catch (err) {
+                showAlert('error', 'Could not complete registration. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Create Account & Enter Website</span> <i class="fa-solid fa-user-check"></i>';
+            }
+        });
+
+        // Forgot Password Modal Logic
+        function openForgotModal() {
+            document.getElementById('forgotModal').classList.add('open');
+            document.getElementById('forgotResultArea').style.display = 'none';
+            const emailInput = document.getElementById('loginEmail').value.trim();
+            if (emailInput) document.getElementById('forgotEmailInput').value = emailInput;
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').classList.remove('open');
+        }
+
+        function handleForgotSubmit() {
+            const email = document.getElementById('forgotEmailInput').value.trim().toLowerCase();
+            const resArea = document.getElementById('forgotResultArea');
+            if (!email) {
+                resArea.style.display = 'block';
+                resArea.innerHTML = '<span style="color:#ef4444;"><i class="fa-solid fa-circle-exclamation"></i> Please enter your email.</span>';
+                return;
+            }
+
+            const users = AppBridge.getRegisteredUsers();
+            const found = users.find(u => u.email.toLowerCase() === email);
+
+            resArea.style.display = 'block';
+            if (found) {
+                resArea.innerHTML = `
+                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; padding:10px; border-radius:6px;">
+                        <b>Account Verified:</b> ${found.name}<br>
+                        Your demo password is: <code style="background:#ffffff; padding:2px 6px; border-radius:4px; font-weight:bold;">${found.passwordHash || 'demo123'}</code><br>
+                        <button type="button" onclick="quickFill('${found.email}', '${found.passwordHash || 'demo123'}'); closeForgotModal();" style="margin-top:8px; padding:4px 10px; background:#10b981; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:600;">Sign in with this account</button>
+                    </div>`;
+            } else {
+                resArea.innerHTML = `
+                    <div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:10px; border-radius:6px;">
+                        <b>Not Registered:</b> No account found for <b>${email}</b>.<br>
+                        Please close this and use the "Create Account" tab to register.
+                    </div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
