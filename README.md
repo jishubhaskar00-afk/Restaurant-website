@@ -5,8 +5,7 @@
 ---
 
 ## 📌 Project Overview
-This project is an end-to-end, full-stack **Online Food Ordering Platform and Restaurant Management System** built strictly in accordance with the **ARDENT Industrial Internships 2024 (NEAT / AICTE)** project requirements.
-
+This project is an end-to-end, full-stack **Online Food Ordering Platform and Restaurant Management System** 
 The application serves both **customers** (browsing menus, customizing dishes, cart management, coupons, checkout, mock payments, live order tracking, order history, ratings, and favorites) and **restaurant owners/managers** (real-time orders management, dynamic menu catalog, price updates, instant stock availability toggles, and operational analytics).
 
 ---
