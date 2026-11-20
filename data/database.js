@@ -369,70 +369,7 @@ const INITIAL_DATA = {
         }
     ],
     orders: [
-        {
-            id: "ORD-9281",
-            userId: "user_demo",
-            customerName: "Debika Mondal",
-            phone: "9876543211",
-            email: "debika@example.com",
-            address: "Flat 4B, Green Park Enclave, Kolkata",
-            orderType: "delivery",
-            timeSlot: "Delivered",
-            instructions: "Ring doorbell twice",
-            paymentMethod: "UPI (Google Pay)",
-            paymentStatus: "Paid",
-            items: [
-                { id: 6, name: "Chicken Biryani", price: 180, qty: 2, total: 360, size: "Single Special", spice: "Traditional" },
-                { id: 12, name: "Milkshakes", price: 120, qty: 1, total: 120, size: "Regular", spice: "Regular Sweet" }
-            ],
-            subtotal: 480,
-            discount: 50,
-            coupon: "WELCOME50",
-            tax: 21.5,
-            deliveryFee: 0,
-            grandTotal: 451.5,
-            status: "Delivered",
-            deliveryPartner: {
-                name: "Rahul Sharma",
-                phone: "+91 98111 22334",
-                vehicle: "Honda Activa (WB-02-AK-4190)",
-                rating: 4.9
-            },
-            createdAt: new Date(Date.now() - 3600000 * 24 * 2).toISOString(),
-            estimatedDelivery: "Delivered"
-        },
-        {
-            id: "ORD-9304",
-            userId: "user_demo",
-            customerName: "Debika Mondal",
-            phone: "9876543211",
-            email: "debika@example.com",
-            address: "Flat 4B, Green Park Enclave, Kolkata",
-            orderType: "delivery",
-            timeSlot: "ASAP (25-35 min)",
-            instructions: "Leave at security desk if unavailable",
-            paymentMethod: "Credit Card (Visa ending in 4242)",
-            paymentStatus: "Paid",
-            items: [
-                { id: 2, name: "Cheese Pizza", price: 249, qty: 1, total: 249, size: "Medium", spice: "Classic Italian" },
-                { id: 7, name: "Momos", price: 70, qty: 2, total: 140, size: "Steamed", spice: "Super Fiery Chili Dip" }
-            ],
-            subtotal: 389,
-            discount: 0,
-            coupon: "",
-            tax: 19.45,
-            deliveryFee: 30,
-            grandTotal: 438.45,
-            status: "Out for Delivery",
-            deliveryPartner: {
-                name: "Amit Mondal",
-                phone: "+91 98333 44556",
-                vehicle: "Hero Splendor (WB-01-AZ-7721)",
-                rating: 4.8
-            },
-            createdAt: new Date(Date.now() - 1200000).toISOString(),
-            estimatedDelivery: "15 mins"
-        }
+        
     ],
     coupons: [
         { code: "WELCOME50", type: "percent", value: 50, maxDiscount: 100, minOrder: 199 },
