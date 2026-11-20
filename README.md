@@ -138,7 +138,6 @@ All test suites will execute and validate the core APIs.
 ## 🔑 Demo Credentials
 - **Customer Accounts:**
   - Email: `debika@example.com` | Password: `demo123`
-  - Email: `jishubhaskar328@gmail.com` | Password: `jishu@060924`
 - **Manager / Admin Account:**
   - Email: `admin@jarestaurant.com` | Password: `admin123`
 
