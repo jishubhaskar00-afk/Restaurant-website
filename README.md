@@ -1,5 +1,4 @@
 # JA Restaurant - Online Food Ordering & Restaurant Management System
-### ARDENT Industrial Internships 2024 (NEAT Cell - AICTE Approved)
 **Author & Developer:** JISHU BHASKAR  
 **Technology Stack:** Node.js, Express.js, JavaScript (ES6+), HTML5, CSS3, JSON Database, PWA (Service Worker)
 
